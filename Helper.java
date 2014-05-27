@@ -13,7 +13,7 @@ public class Helper {
 	/**
 	 * Checks that the sample point X is within the domain of the density function
 	 * @param X : the data point to check
-	 * @return : whether or not the point is in the domain
+	 * @return  : whether or not the point is in the domain
 	 */
 	public static boolean inRange (double X) {
 	}
@@ -21,7 +21,9 @@ public class Helper {
 	/**
 	 * Updates the function coefficients based on the incoming data point and
 	 * the data point leaving the sliding window
+	 * 
 	 * Post: the coefficients are updated as needed
+	 * 
 	 * @param Xnew : the new data point to update the coefficients based on
 	 * @param Xold : the leaving data point to update the coefficients based on
 	 */
@@ -32,6 +34,7 @@ public class Helper {
 	/**
 	 * Find the maximum and minimum translation indices which
 	 * support the incoming data point.
+	 * 
 	 * @param X : the data point
 	 * @param j : the resolution level
 	 * @return : An array containing the minimum and maximum
@@ -55,6 +58,7 @@ public class Helper {
 	 * Initializes the arrays to hold the scaling basis function
 	 * and wavelet basis function coefficients based off
 	 * of the resolution levels.
+	 * 
 	 * Post: the coefficients arrays are of the appropriate size
 	 */
 	public static void initializeCoefficients() {

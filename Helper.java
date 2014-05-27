@@ -16,7 +16,8 @@ public class Helper {
 	 * @return  : whether or not the point is in the domain
 	 */
 	public static boolean inRange (double X) {
-	}
+		
+	} // end inRange
 	
 	/**
 	 * Updates the function coefficients based on the incoming data point and
@@ -29,7 +30,7 @@ public class Helper {
 	 */
 	public static void updateCoefficients(double Xnew, double Xold){
 		
-	}
+	} // end updateCoefficients
 	
 	/**
 	 * Find the maximum and minimum translation indices which
@@ -42,7 +43,7 @@ public class Helper {
 	 */
 	public static double[] findRelevantKIndices(double X, int j) {
 		
-	}
+	} //end findRelevantKIndices
 	
 	/**
 	 * Returns the translates for the scaling basis functions,
@@ -52,7 +53,7 @@ public class Helper {
 	 */
 	public static ArrayList<Double> getScaleTranslates() {
 		
-	}
+	} //end getScaleTranslates
 	
 	/**
 	 * Initializes the arrays to hold the scaling basis function
@@ -63,7 +64,7 @@ public class Helper {
 	 */
 	public static void initializeCoefficients() {
 		
-	}
+	} //end intializeCoefficients
 	
 	/**
 	 * Takes in an un-normalized density estimate and returns the
@@ -77,7 +78,7 @@ public class Helper {
 	 */
 	public static ArrayList<Double> normalizeDensity(ArrayList<Double> unNormDensity){
 		
-	}
+	} //end normalizeDensity
 	
 }
 

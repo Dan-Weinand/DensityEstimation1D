@@ -80,5 +80,15 @@ public class Helper {
 		
 	} //end normalizeDensity
 	
+	/**
+	 * Takes the normalized density over the supported range and
+	 * returns the same, formatted for GRAL compatibility
+	 * @param normDensity : The normalized density over the supported range
+	 * @return the density over the support
+	 */
+	public static DataTable getDataTable(ArrayList<Double> normDensity) {
+		
+	}
+	
 }
 

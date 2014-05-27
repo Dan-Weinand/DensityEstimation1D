@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 /**
  * Represents the wavelet including both the scaling and wavelet functions.
  * 

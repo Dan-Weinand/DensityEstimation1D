@@ -49,4 +49,4 @@ public class Wavelet {
 	
 	
 
-} // end class Wavelet.
+} // end class Wavelet..

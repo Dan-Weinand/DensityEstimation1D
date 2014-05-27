@@ -16,6 +16,11 @@ public class Settings {
 	//      1: Caudle aging method.
 	//      2: Window method.
 	public static int agingFlag        = 0;
+	public static final int caudleAge  = 1;
+	public static final int windowAge  = 2;
+	
+	// The distance between points in the density estimation plot
+	public static double discretization = .01; 
 	
 	// Size of the window for data aging using the window method.
 	public static int windowSize       = 600;

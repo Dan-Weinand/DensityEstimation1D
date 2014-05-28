@@ -5,10 +5,10 @@
  * 
  */
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class Helper {
-
 	
 	/**
 	 * Checks that the sample point X is within the domain of the density function.
@@ -16,7 +16,7 @@ public class Helper {
 	 * @return  : whether or not the point is in the domain
 	 */
 	public static boolean inRange (double X) {
-		
+		return (X > Settings.getMinimumRange() && X < Settings.getMaximumRange());
 	} // end inRange
 	
 	/**
@@ -63,6 +63,7 @@ public class Helper {
 	 * Post: the coefficients arrays are of the appropriate size.
 	 */
 	public static void initializeCoefficients() {
+		scaleCoefficients = new ArrayList<Double> (Collections.nCopies(Settings, arg1));
 		
 	} //end intializeCoefficients
 	

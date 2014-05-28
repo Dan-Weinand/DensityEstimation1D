@@ -46,14 +46,14 @@ public class DensityHelper {
 	} //end findRelevantKIndices
 	
 	/**
-	 * Returns the translates for the scaling basis functions,
+	 * Initializes the translates for the scaling basis functions,
 	 * based off of the maximum/minimum values supported and
 	 * the starting resolution level.
 	 * @return the translates for the scaling basis functions
 	 */
-	public static ArrayList<Double> getScaleTranslates() {
+	public static void initializeTranslates() {
 		
-	} //end getScaleTranslates
+	} //end initializeTranslates
 	
 	/**
 	 * Initializes the arrays to hold the scaling basis function

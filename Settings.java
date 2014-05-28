@@ -31,6 +31,9 @@ public class Settings {
 	// Minimum and Maximum values on the domain of the density function.
 	public static double[] densityRange = {-3.5, 3.5};
 	
+	public static double getMinimumRange() { return (densityRange[0]); }
+	public static double getMaximumRange() { return (densityRange[1]); }
+	
 	// Minimum and Maximum values on the domain of the sample vector.
 	public static double[] sampleRange = {0, 0};
 	

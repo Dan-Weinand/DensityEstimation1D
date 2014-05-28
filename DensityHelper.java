@@ -5,10 +5,10 @@
  * 
  */
 import java.util.ArrayList;
+import java.util.Collections;
 
 
-public class Helper {
-
+public class DensityHelper {
 	
 	/**
 	 * Checks that the sample point X is within the domain of the density function.
@@ -16,7 +16,7 @@ public class Helper {
 	 * @return  : whether or not the point is in the domain
 	 */
 	public static boolean inRange (double X) {
-		
+		return (X > Settings.getMinimumRange() && X < Settings.getMaximumRange());
 	} // end inRange
 	
 	/**
@@ -79,6 +79,16 @@ public class Helper {
 	public static ArrayList<Double> normalizeDensity(ArrayList<Double> unNormDensity){
 		
 	} //end normalizeDensity
+	
+	/**
+	 * Takes the normalized density over the supported range and
+	 * returns the same, formatted for GRAL compatibility
+	 * @param normDensity : The normalized density over the supported range
+	 * @return the density over the support
+	 */
+	public static DataTable getDataTable(ArrayList<Double> normDensity) {
+		
+	}
 	
 }
 

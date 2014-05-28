@@ -104,6 +104,18 @@ public class DensityHelper {
 	} //end intializeCoefficients
 	
 	/**
+	 * Calculates the density at each discrete point in the
+	 * range pre-specified.
+	 * 
+	 * Pre: the coefficient matrices have been created and
+	 *      are the proper size
+	 * @return the un-normalized density estimate
+	 */
+	public static ArrayList<Double> getDensity() {
+		
+	}
+	
+	/**
 	 * Takes in an un-normalized density estimate and returns the
 	 * normalized version, using the normalization procedure from
 	 * Gajek (1986) 'On improving density estimators which are

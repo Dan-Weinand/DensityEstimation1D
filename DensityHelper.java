@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 
-public class Helper {
+public class DensityHelper {
 	
 	/**
 	 * Checks that the sample point X is within the domain of the density function.
@@ -63,7 +63,6 @@ public class Helper {
 	 * Post: the coefficients arrays are of the appropriate size.
 	 */
 	public static void initializeCoefficients() {
-		scaleCoefficients = new ArrayList<Double> (Collections.nCopies(Settings, arg1));
 		
 	} //end intializeCoefficients
 	

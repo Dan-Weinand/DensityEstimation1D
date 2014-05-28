@@ -21,9 +21,63 @@ public class Wavelet {
 	
 	/**
 	 * Constructor.
-	 * @param waveletType     : 3 - 4 character name for the wavelet to be used.
+	 * @param waveletType     : character name for the wavelet to be used.
 	 */
-	public Wavelet(String waveletType){} // end constructor method.
+	public Wavelet(String waveletType){
+		initializeSupport(waveletType);
+		
+	} // end constructor method.
+	
+	/**
+	 * Initializes the support to the appropriate size given
+	 * a valid wavelet type.
+	 * 
+	 * Post: support is set
+	 * @param waveletType     : character name for the wavelet to be used.
+	 */
+	public static void initializeSupport(String waveletType) {
+		String waveFamily = "";
+		
+		// Create the string for the wavelet family
+		int ordBegin = -1;
+		for (int i = 0; i < waveletType.length(); i++) {
+			char currentChar = waveletType.charAt(i);
+			if (Character.isDigit(currentChar)) {
+				ordBegin = i;
+				break;
+			}
+			else {
+				waveFamily += currentChar;
+			}
+			
+		}
+		
+		int order = -1;
+		// Determine wavelet order if appropriate
+		if (ordBegin ~= -1) {
+			int order = Integer.parseInt(waveletType.substring(ordBegin));
+		}
+		
+		case (waveFamily) {
+			case "db" :
+				support = new double[] {0 2*order - 1};
+				break;
+			case "sym" :
+				support = new double[] {0 2*order - 1};
+				break;
+			case "coif" :
+				support = new double[] {0 6*order - 1};
+				break;
+			case "dmey" :
+				support = new double[] {0 101};
+				break;
+			default :
+				// Unsupported wavelet type
+				boolean unsupportedWavelet = true;
+				assert(!unsupportedWavelet);
+				break;
+		}
+	}
 	
 	/**
 	 * Returns the support of the given wavelet.

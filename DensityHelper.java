@@ -49,10 +49,36 @@ public class DensityHelper {
 	 * Initializes the translates for the scaling basis functions,
 	 * based off of the maximum/minimum values supported and
 	 * the starting resolution level.
+	 * 
+	 * Post: the translates in Transform are set appropriately
 	 * @return the translates for the scaling basis functions
 	 */
 	public static void initializeTranslates() {
 		
+		// Initialize the scaling translates
+		Transform.scalingTranslates = new ArrayList<Double> ();
+		int startTranslate = (int) Math.floor((Math.pow(2,Settings.startLevel)*Settings.getMinimumRange())-Wavelet.getSupport()[1]);
+		int stopTranslate = (int) Math.ceil((Math.pow(2,Settings.startLevel)*Settings.getMaximumRange())-Wavelet.getSupport()[0]);
+		for (double k = startTranslate; k <= stopTranslate; k++){
+			Transform.scalingTranslates.add(k);
+		}
+		
+		// Initialize the wavelet translates if wavelets are being used
+		if (Settings.waveletFlag) {
+			Transform.waveletTranslates = new ArrayList<ArrayList<Double>> ();
+		
+			// Loop through resolutions
+			for (int j = Settings.startLevel; j <= Settings.stopLevel; j++){
+				
+				ArrayList<Double> jTranslates = new ArrayList<Double> ();
+				int startWTranslate = (int) Math.floor((Math.pow(2,j)*Settings.getMinimumRange())-Wavelet.getSupport()[1]);
+				int stopWTranslate = (int) Math.ceil((Math.pow(2,j)*Settings.getMaximumRange())-Wavelet.getSupport()[0]);
+				for (double k = startWTranslate; k <= stopWTranslate; k++){
+					jTranslates.add(k);
+				}
+				Transform.waveletTranslates.add(jTranslates);
+			}
+		}
 	} //end initializeTranslates
 	
 	/**

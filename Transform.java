@@ -11,13 +11,13 @@ public class Transform {
 	public static ArrayList<Double> scalingCoefficients;
 	
 	// wavelet function's coefficients.
-	public static ArrayList<Double> waveletCoefficients;
+	public static ArrayList<ArrayList<Double>> waveletCoefficients;
 	
 	// Scaling function's translates.
 	public static ArrayList<Double> scalingTranslates;
 		
 	// wavelet function's translates.
-	public static ArrayList<Double> waveletTranslates;
+	public static ArrayList<ArrayList<Double>> waveletTranslates;
 	
 	
 	

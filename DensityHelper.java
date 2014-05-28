@@ -89,7 +89,18 @@ public class DensityHelper {
 	 * Post: the coefficients arrays are of the appropriate size.
 	 */
 	public static void initializeCoefficients() {
+		Transform.scalingCoefficients = new ArrayList<Double>(Collections.nCopies(Transform.scalingTranslates.size(), 0.0));
 		
+		if (Settings.waveletFlag) {
+			Transform.waveletCoefficients = new ArrayList<ArrayList<Double>> ();
+			
+			// Loop through resolutions
+			for (int j = Settings.startLevel; j <= Settings.stopLevel; j++){
+				ArrayList<Double> jCoefficients = new ArrayList<Double> (Collections.nCopies
+													(Transform.waveletTranslates.get(j).size(), 0.0));
+				Transform.waveletCoefficients.add(jCoefficients);
+			}
+		}
 	} //end intializeCoefficients
 	
 	/**
@@ -104,6 +115,40 @@ public class DensityHelper {
 	 */
 	public static ArrayList<Double> normalizeDensity(ArrayList<Double> unNormDensity){
 		
+		ArrayList<Double> normDens = unNormDensity;
+		int iter = 0;
+		double threshold = Math.pow(10, -16);
+		double densityDomainSize = Settings.getMaximumRange() - Settings.getMinimumRange();
+		
+		while (iter < 1000) {
+			
+			// Zero negative points
+			for (int i = 0; i < unNormDensity.size(); i++) {
+				normDens.set(i, Math.max(normDens.get(i),0.0));
+			}
+			
+			// Sum over probability density over interval
+			double integralSum = 0.0;
+			for (int i = 0; i < unNormDensity.size(); i++) {
+				integralSum += normDens.get(i);
+			}
+			
+			// Return if error is under threshold
+			if (Math.abs(integralSum - 1) < threshold) {
+				return (normDens);
+			}
+			
+			// Modify density so that it integrates to 1
+			double normalizeConstant = (integralSum - 1) / densityDomainSize;
+			for (int i = 0; i < unNormDensity.size(); i++) {
+				normDens.set(i, normDens.get(i) - normalizeConstant);
+			}
+			
+			iter++;
+		}
+		
+		// Settle for the current approximation
+		return normDens;
 	} //end normalizeDensity
 	
 	/**

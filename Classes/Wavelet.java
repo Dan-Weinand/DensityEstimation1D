@@ -46,10 +46,10 @@ public class Wavelet {
 		Wavelet.phi    = loadFunctionData( "../WaveletFiles/" + wavType + "PHI.csv" );
 		
 		// Load psi function data
-		Wavelet.psi    = loadFunctionData( "../WaveletFiles/" + wavType + "PSI.csv " );
+		Wavelet.psi    = loadFunctionData( "../WaveletFiles/" + wavType + "PSI.csv" );
 		
 		// Load domain
-		Wavelet.domain = loadFunctionData( "../WaveletFiles/" + wavType + "SUPP.csv " );
+		Wavelet.domain = loadFunctionData( "../WaveletFiles/" + wavType + "SUPP.csv" );
 		
 	} // end init method.
 	

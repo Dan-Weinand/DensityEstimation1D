@@ -12,7 +12,9 @@ public class DensityBuffer {
 	private static double[] buffer;
 	private int lastPushed = 0;  // index of the last sample pushed from the buffer array.
 	private int numOfSamples;           // number of samples in the given file.
-	private int numOfBuffering;
+	private int numOfBufferingSets;
+	private int currentBufferingSet;
+	private static int numOfSamplesRead = 0;
 	
 	/**
 	 * Constructor
@@ -24,7 +26,8 @@ public class DensityBuffer {
 		this.windowSize     = wndSize;
 		     buffer         = new double[this.windowSize];
 		this.numOfSamples   = this.initBuffer(buffer);
-		this.numOfBuffering = (int) Math.ceil( (double)this.numOfSamples / (double) this.windowSize );
+		this.numOfBufferingSets  = (int) Math.ceil( (double)this.numOfSamples / (double) this.windowSize );
+		this.currentBufferingSet = 1;
 	}
 	
 	/**
@@ -69,8 +72,11 @@ public class DensityBuffer {
 	public boolean hasNext(){
 		// if lastPushed == windowsize - 1 and there is nothing else to read from the file
 		// return false
-		
+		if(this.lastPushed == DensityBuffer.numOfSamplesRead - 1 && this.currentBufferingSet == this.numOfBufferingSets){
+			return false;
+		}
 		// otherwise return true
+		else return true;
 	}
 	
 	/**
@@ -89,6 +95,7 @@ public class DensityBuffer {
 			if(numOfSamps < this.windowSize)
 			{
 				bufferArray[numOfSamps] = Double.parseDouble(lineContent);
+				++DensityBuffer.numOfSamplesRead;
 			}
 			++numOfSamps;
 		}
@@ -96,4 +103,17 @@ public class DensityBuffer {
 		
 		return numOfSamps;
 	}// end initBuffer method.
+	
+	/**
+	 * Read the next batch from the file
+	 * @param bufferArray  : buffer array
+	 * @return 
+	 */
+	private void getNewBatch(double[] bufferArray){
+		if(this.currentBufferingSet == this.numOfBufferingSets)
+		{
+			DensityBuffer.numOfSamplesRead = 0;
+			
+		}
+	}
 }

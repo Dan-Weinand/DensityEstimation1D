@@ -37,19 +37,19 @@ public class Wavelet {
 	public static void init(String wavType) throws IOException{
 		
 		// Set the wavelet type.
-		waveletType = wavType;
+		Wavelet.waveletType = wavType;
 		
 		// Find the support for the given wavelet.
 		initializeSupport(wavType);
 		
 		// Load phi function data.
-		Wavelet.phi    = loadFunctionData( wavType + "PHI.csv" );
+		Wavelet.phi    = loadFunctionData( "../WaveletFiles/" + wavType + "PHI.csv" );
 		
 		// Load psi function data
-		Wavelet.psi    = loadFunctionData( wavType + "PSI.csv " );
+		Wavelet.psi    = loadFunctionData( "../WaveletFiles/" + wavType + "PSI.csv " );
 		
 		// Load domain
-		Wavelet.domain = loadFunctionData( wavType + "SUPP.csv " );
+		Wavelet.domain = loadFunctionData( "../WaveletFiles/" + wavType + "SUPP.csv " );
 		
 	} // end init method.
 	
@@ -81,21 +81,21 @@ public class Wavelet {
 		int order = -1;
 		// Determine wavelet order if appropriate
 		if (ordBegin != -1) {
-			int order = Integer.parseInt(wavType.substring(ordBegin));
+			order = Integer.parseInt(wavType.substring(ordBegin));
 		}
 		
 		switch (waveFamily) {
 			case "db" :
-				waveletSupport = {0, 2*order - 1};
+				waveletSupport = new double[] {0, 2*order - 1};
 				break;
 			case "sym" :
-				waveletSupport = {0, 2*order - 1};
+				waveletSupport = new double[] {0, 2*order - 1};
 				break;
 			case "coif" :
-				waveletSupport = {0, 6*order - 1};
+				waveletSupport = new double[] {0, 6*order - 1};
 				break;
 			case "dmey" :
-				waveletSupport = {0, 101};
+				waveletSupport = new double[] {0, 101};
 				break;
 			default :
 				// Unsupported wavelet type
@@ -122,7 +122,7 @@ public class Wavelet {
 	 * @return the interpolated value of phi at the location.
 	 */
 	public static double getPhiAt(double position) {
-		assert(!phi.isEmpty());
+		return interpolate(position, Wavelet.domain, Wavelet.phi);
 	}// end method getPhiAt().
 	
 	/**
@@ -132,17 +132,18 @@ public class Wavelet {
 	 * @return the interpolated value of psi at the location.
 	 */
 	public static double getPsiAt(double position) {
-		assert(!psi.isEmpty());
+		return interpolate(position, Wavelet.domain, Wavelet.psi);
 	} // end method getPsiAt().
 	
 	
 	/**
-	 * Checks if the given sample is in the domain of the density or not.
+	 * Checks if the given sample is in the domain of the wavelet or not.
 	 * @param x : sample
 	 * @return True  : if sample is in the domain.
 	 *         False : if sample is not in the domain.
 	 */
 	public static boolean inSupport(double x){
+		return x >= Wavelet.waveletSupport[0] && x <= Wavelet.waveletSupport[1];		
 		
 	} // end inSupport method.
 	
@@ -172,6 +173,43 @@ public class Wavelet {
 		
 		return fnData;
 	}// end loadFunctionData method.
+	
+	/**
+	 * Returns the interpolated value using linear interpolation.
+	 * @param x           : point of interpolation.
+	 * @param wavSupport  : domain of given function
+	 * @param funData     : look-up table for the function
+	 * @return	interpolated value.
+	 */
+	private static double interpolate(double x, ArrayList<Double> wavSupport, ArrayList<Double> funData ){
+		double interpValue = 0;
+		int index = -1;
+		
+		for(int i = 0; i < wavSupport.size(); i++){
+			if(wavSupport.get(i) == x)
+			{
+				return funData.get(i);
+			}
+			else if(wavSupport.get(i) > x)
+			{
+				index = i;
+				break;
+			}
+				
+		} // end int i = 0; i < wavSupport.size(); i++
+		
+		if(index != -1)
+		{
+			// Using linear interpolation.
+			double slope = ( funData.get(index) - funData.get(index - 1) ) / ( wavSupport.get(index) - wavSupport.get(index - 1) );
+			interpValue = funData.get(index) + slope * (x - wavSupport.get(index));
+		}// end if(index != -1)
+		
+		return interpValue;
+		
+		
+		
+	}// end interpolate method.
 	
 	
 

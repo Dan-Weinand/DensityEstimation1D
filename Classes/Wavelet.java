@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
+
 import au.com.bytecode.opencsv.CSVReader;
 /**
  * Represents the wavelet including both the scaling and wavelet functions.
@@ -31,8 +32,9 @@ public class Wavelet {
 	/**
 	 * Initializes the wavelet
 	 * @param wavType : string for the wavelet type
+	 * @throws IOException 
 	 */
-	public static void init(String wavType){
+	public static void init(String wavType) throws IOException{
 		
 		// Set the wavelet type.
 		waveletType = wavType;

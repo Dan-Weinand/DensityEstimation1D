@@ -53,11 +53,8 @@ public class EstimatorGUI extends JApplet implements ActionListener {
                 public void run() {
                 	
                 	// Initialize algorithm variables and GUI
-                	try {
-						Wavelet.init("db2");
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					try { Wavelet.init("db2"); } 
+					catch (IOException e) {	e.printStackTrace();}
                 	DensityHelper.initializeTranslates();
                 	DensityHelper.initializeCoefficients();
                 	initializeGUI();
@@ -88,7 +85,9 @@ public class EstimatorGUI extends JApplet implements ActionListener {
     	stopButton = new JButton ("Stop");
     	stopButton.addActionListener(this);
     	resetButton = new JButton ("Reset");
+    	resetButton.addActionListener(this);
     	settingsButton = new JButton ("Settings");
+    	settingsButton.addActionListener(this);
     	optionsPanel.add(startButton);
     	optionsPanel.add(stopButton);
     	optionsPanel.add(resetButton);

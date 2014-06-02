@@ -7,6 +7,8 @@
 import java.util.ArrayList;
 import java.util.Collections;
 
+import de.erichseifert.gral.data.DataTable;
+
 
 public class DensityHelper {
 	
@@ -29,7 +31,27 @@ public class DensityHelper {
 	 * @param Xold : the leaving data point to update the coefficients based on
 	 */
 	public static void updateCoefficients(double Xnew, double Xold){
+		//NOT YET VETTED
 		
+		// The normalizing constant for the scaling basis functions
+		double scaleNormalizer = Math.pow(2, Settings.startLevel/2.0)/Settings.windowSize;
+		
+		//Loop through the translations for the scaling basis functions
+		int scaleInd = 0;
+		for (double k : Transform.scalingTranslates) {
+			
+			// Get the translated & scaled data point
+			double xScaled = Math.pow(2, Settings.startLevel*Xnew) - k;
+			
+			// If the wavelet supports the data point, update the coefficient
+			if (Wavelet.inSupport(xScaled)) {
+				double scaleNew = Transform.scalingCoefficients.get(scaleInd) 
+						          + Wavelet.getPhiAt(xScaled);
+				Transform.scalingCoefficients.set(scaleInd, scaleNew);
+				
+			}
+			scaleInd++;
+		}
 	} // end updateCoefficients
 	
 	/**
@@ -42,6 +64,17 @@ public class DensityHelper {
 	 *           translation indices which support the data point
 	 */
 	public static double[] findRelevantKIndices(double X, int j) {
+		//NOT YET VETTED
+		
+		// Get the max & min values for the wavelet's support
+		int[] waveletMinMax = Wavelet.getSupport();
+		
+		double kMin = Math.ceil(Math.pow(2,j*X) - waveletMinMax[0]);
+		double kMax = Math.floor(Math.pow(2,j*X) - waveletMinMax[1]);
+		double[] kMinMax = new double[2];
+		kMinMax[0] = kMin;
+		kMinMax[1] = kMax;
+		return (kMinMax);
 		
 	} //end findRelevantKIndices
 	
@@ -89,6 +122,8 @@ public class DensityHelper {
 	 * Post: the coefficients arrays are of the appropriate size.
 	 */
 	public static void initializeCoefficients() {
+		
+		// Set all scaling coefficients to 0
 		Transform.scalingCoefficients = new ArrayList<Double>(Collections.nCopies(Transform.scalingTranslates.size(), 0.0));
 		
 		if (Settings.waveletFlag) {
@@ -96,6 +131,8 @@ public class DensityHelper {
 			
 			// Loop through resolutions
 			for (int j = Settings.startLevel; j <= Settings.stopLevel; j++){
+				
+				// Set all wavelet at this resolution coefficients to 0
 				ArrayList<Double> jCoefficients = new ArrayList<Double> (Collections.nCopies
 													(Transform.waveletTranslates.get(j).size(), 0.0));
 				Transform.waveletCoefficients.add(jCoefficients);
@@ -109,10 +146,41 @@ public class DensityHelper {
 	 * 
 	 * Pre: the coefficient matrices have been created and
 	 *      are the proper size
-	 * @return the un-normalized density estimate
+	 * @return the normalized density estimate
 	 */
-	public static ArrayList<Double> getDensity() {
+	public static DataTable getDensity() {
+		//NOT YET VETTED
 		
+		ArrayList<Double> density = new ArrayList<Double> ();
+		
+		// Calculate un-normalized density for each point in domain
+		int scalIndex = 0;
+		for (double i = Settings.getMinimumRange(); 
+				i < Settings.getMaximumRange(); i += Settings.discretization) {
+			
+			// Density at point i
+			double iDense = 0.0;
+			
+			// Cycle through translates for each point
+			for (double k : Transform.scalingTranslates) {
+				double Xi = Math.pow(2, Settings.startLevel * i) - k;
+				
+				// Only update if the point is supported
+				if (Wavelet.inSupport(Xi)) {
+					iDense += Transform.scalingCoefficients.get(scalIndex) 
+							  * Wavelet.getPhiAt(Xi);
+				}
+			}
+			density.add(iDense);
+			scalIndex++;
+		}
+		
+		//Normalize density
+		density = normalizeDensity(density);
+		
+		//Convert to a data table
+		DataTable densityTable = toDataTable(density);
+		return(densityTable);
 	}
 	
 	/**
@@ -125,7 +193,7 @@ public class DensityHelper {
 	 *                        over the domain range.
 	 * @return the normalized density.
 	 */
-	public static ArrayList<Double> normalizeDensity(ArrayList<Double> unNormDensity){
+	private static ArrayList<Double> normalizeDensity(ArrayList<Double> unNormDensity){
 		
 		ArrayList<Double> normDens = unNormDensity;
 		int iter = 0;
@@ -169,8 +237,18 @@ public class DensityHelper {
 	 * @param normDensity : The normalized density over the supported range
 	 * @return the density over the support
 	 */
-	public static DataTable getDataTable(ArrayList<Double> normDensity) {
+	private static DataTable toDataTable(ArrayList<Double> normDensity) {
+		//NOT YET VETTED
 		
+		// Create the data table to put the density in
+		DataTable densityData = new DataTable(Double.class, Double.class);
+        for (int i = 0; i < normDensity.size(); i++) {
+            double Xi = Settings.getMinimumRange() + i*Settings.discretization;
+            double Yi = normDensity.get(i);
+            densityData.add(Xi, Yi);
+        }
+        
+        return (densityData);
 	}
 	
 }

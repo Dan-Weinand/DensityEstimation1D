@@ -10,6 +10,8 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JApplet;
 import javax.swing.JButton;
@@ -26,7 +28,19 @@ import de.erichseifert.gral.plots.lines.DefaultLineRenderer2D;
 import de.erichseifert.gral.plots.lines.LineRenderer;
 import de.erichseifert.gral.ui.InteractivePanel;
 
-public class EstimatorGUI extends JApplet {
+public class EstimatorGUI extends JApplet implements ActionListener {
+	
+	
+	// The option buttons
+	private JButton startButton;
+	private JButton stopButton;
+	private JButton resetButton;
+	private JButton settingsButton;
+	
+	private DataTable densityTable;  // The density information
+	private DensityBuffer densBuf;   // The buffer for the user data
+	private boolean stopped;         // The user has selected the stop button
+	private static final int MAX_SAMPLES = 10000000; // Maximum samples which can be read
 	
 	/**
 	 * Create the applet frame
@@ -36,6 +50,10 @@ public class EstimatorGUI extends JApplet {
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
                 public void run() {
+                	
+                	// Initialize algorithm variables and GUI
+                	DensityHelper.initializeTranslates();
+                	DensityHelper.initializeCoefficients();
                 	initializeGUI();
                 }
             });
@@ -59,10 +77,11 @@ public class EstimatorGUI extends JApplet {
     	optionsPanel.setAlignmentY(0);
     	
     	// Create and add the windows to the panel
-    	JButton startButton = new JButton ("Start");
-    	JButton stopButton = new JButton ("Stop");
-    	JButton resetButton = new JButton ("Reset");
-    	JButton settingsButton = new JButton ("Settings");
+    	startButton = new JButton ("Start");
+    	startButton.addActionListener(this);
+    	stopButton = new JButton ("Stop");
+    	resetButton = new JButton ("Reset");
+    	settingsButton = new JButton ("Settings");
     	optionsPanel.add(startButton);
     	optionsPanel.add(stopButton);
     	optionsPanel.add(resetButton);
@@ -70,23 +89,65 @@ public class EstimatorGUI extends JApplet {
     	GUI.add(optionsPanel, BorderLayout.NORTH);
     	
     	// Add the plot to the frame
-    	DataTable data = new DataTable(Double.class, Double.class);
+    	densityTable = new DataTable(Double.class, Double.class);
         for (double x = -0.5; x <= 4.5; x+=0.1) {
             double y = Math.max((5.0*Math.sin(x)+Math.random()*.5)/6.0,0.0);
-            data.add(x, y);
+            densityTable.add(x, y);
         }
-        XYPlot dataPlot = new XYPlot(data);
+        XYPlot dataPlot = new XYPlot(densityTable);
         Axis newAxis = dataPlot.getAxis("y");
         newAxis.setMin(-.1);
         dataPlot.setAxis("y", newAxis);
         InteractivePanel dataPanel = new InteractivePanel(dataPlot);        
         LineRenderer lines = new DefaultLineRenderer2D();
-        dataPlot.setLineRenderer(data, lines);
+        dataPlot.setLineRenderer(densityTable, lines);
         Color color = new Color(0.0f, 0.3f, 1.0f, 0);
-        dataPlot.getPointRenderer(data).setColor(color);
+        dataPlot.getPointRenderer(densityTable).setColor(color);
         GUI.add(dataPanel, BorderLayout.CENTER);
         
         // Add the frame to the display
         add(GUI);
+	}
+
+	/**
+	 * User clicked a GUI button
+	 */
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == startButton) {
+			stopped = false;
+			onlineEstimation();
+	        
+		}
+		
+		if (e.getSource() == stopButton) {
+			stopped = true;
+		}
+		
+	}
+	
+	/**
+	 * Runs the density estimation algorithm
+	 * and plots the estimates at intervals
+	 */
+	public void onlineEstimation() {
+		
+		// How many samples have been read in
+		int sampInd = 0;
+		while (densBuf.hasNext() && !stopped && sampInd < MAX_SAMPLES) {
+
+			double Xnew = densBuf.getNext();
+			double NOT_YET_USED;
+			DensityHelper.updateCoefficients(Xnew, NOT_YET_USED);
+			
+			// Update plot if the appropriate number of samples have been read
+			if (sampInd % Settings.updateFrequency == 0) {
+				DensityHelper.updateDensity(densityTable);
+				this.repaint();
+				
+				// Pause briefly to display the plot
+				Thread.sleep(500);
+			}
+	        sampInd++;
+		}
 	}
 }

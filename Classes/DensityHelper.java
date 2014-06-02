@@ -148,7 +148,7 @@ public class DensityHelper {
 	 *      are the proper size
 	 * @return the normalized density estimate
 	 */
-	public static DataTable getDensity() {
+	public static ArrayList<Double> getDensity() {
 		//NOT YET VETTED
 		
 		ArrayList<Double> density = new ArrayList<Double> ();
@@ -178,9 +178,7 @@ public class DensityHelper {
 		//Normalize density
 		density = normalizeDensity(density);
 		
-		//Convert to a data table
-		DataTable densityTable = toDataTable(density);
-		return(densityTable);
+		return(density);
 	}
 	
 	/**
@@ -234,21 +232,20 @@ public class DensityHelper {
 	/**
 	 * Takes the normalized density over the supported range and
 	 * returns the same, formatted for GRAL compatibility
-	 * @param normDensity : The normalized density over the supported range
+	 * @param density : the data table containing the density information
 	 * @return the density over the support
 	 */
-	private static DataTable toDataTable(ArrayList<Double> normDensity) {
+	public static void updateDensity(DataTable densityTable) {
 		//NOT YET VETTED
 		
-		// Create the data table to put the density in
-		DataTable densityData = new DataTable(Double.class, Double.class);
+		ArrayList<Double> normDensity = getDensity();
+		
+		// Update each density in the range
         for (int i = 0; i < normDensity.size(); i++) {
-            double Xi = Settings.getMinimumRange() + i*Settings.discretization;
             double Yi = normDensity.get(i);
-            densityData.add(Xi, Yi);
+            densityTable.set(i, 1, Yi);
         }
-        
-        return (densityData);
+
 	}
 	
 }

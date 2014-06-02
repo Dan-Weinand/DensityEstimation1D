@@ -22,6 +22,9 @@ public class Settings {
 	// The distance between points in the density estimation plot
 	public static double discretization = .01; 
 	
+	// How many samples to wait in between plot updates
+	public static int updateFrequency;
+	
 	// Size of the window for data aging using the window method.
 	public static int windowSize       = 600;
 	

@@ -1,4 +1,8 @@
 import java.util.ArrayList;
+import java.io.*;
+import java.util.List;
+import java.util.ArrayList;
+import au.com.bytecode.opencsv.CSVReader;
 /**
  * Represents the wavelet including both the scaling and wavelet functions.
  * 
@@ -8,10 +12,11 @@ import java.util.ArrayList;
 public class Wavelet {
 	
 	// Type of the wavelet.
-	protected String waveletType;
+	private static String waveletType;
 	
-	// The support for the wavelet used.
-	private static ArrayList<Double> supp;
+	// The domain for the wavelet used.
+	// This called "supp" in the MATLAB implementation.
+	private static ArrayList<Double> domain;
 	
 	// The wavelet function for the wavelet used.
 	private static ArrayList<Double> psi;
@@ -19,29 +24,48 @@ public class Wavelet {
 	// The scaling function for the wavelet used.
 	private static ArrayList<Double> phi;
 	
+	// The support of the wavelet used.
+	private static double[] waveletSupport;
+	
+	
 	/**
-	 * Constructor.
-	 * @param waveletType     : character name for the wavelet to be used.
+	 * Initializes the wavelet
+	 * @param wavType : string for the wavelet type
 	 */
-	public Wavelet(String waveletType){
-		initializeSupport(waveletType);
+	public static void init(String wavType){
 		
-	} // end constructor method.
+		// Set the wavelet type.
+		waveletType = wavType;
+		
+		// Find the support for the given wavelet.
+		initializeSupport(wavType);
+		
+		// Load phi function data.
+		Wavelet.phi    = loadFunctionData( wavType + "PHI.csv" );
+		
+		// Load psi function data
+		Wavelet.psi    = loadFunctionData( wavType + "PSI.csv " );
+		
+		// Load domain
+		Wavelet.domain = loadFunctionData( wavType + "SUPP.csv " );
+		
+	} // end init method.
+	
 	
 	/**
 	 * Initializes the support to the appropriate size given
 	 * a valid wavelet type.
 	 * 
 	 * Post: support is set
-	 * @param waveletType     : character name for the wavelet to be used.
+	 * @param wavType     : character name for the wavelet to be used.
 	 */
-	public static void initializeSupport(String waveletType) {
+	private static void initializeSupport(String wavType) {
 		String waveFamily = "";
 		
 		// Create the string for the wavelet family
 		int ordBegin = -1;
-		for (int i = 0; i < waveletType.length(); i++) {
-			char currentChar = waveletType.charAt(i);
+		for (int i = 0; i < wavType.length(); i++) {
+			char currentChar = wavType.charAt(i);
 			if (Character.isDigit(currentChar)) {
 				ordBegin = i;
 				break;
@@ -55,21 +79,21 @@ public class Wavelet {
 		int order = -1;
 		// Determine wavelet order if appropriate
 		if (ordBegin ~= -1) {
-			int order = Integer.parseInt(waveletType.substring(ordBegin));
+			int order = Integer.parseInt(wavType.substring(ordBegin));
 		}
 		
 		case (waveFamily) {
 			case "db" :
-				support = new double[] {0 2*order - 1};
+				waveletSupport = {0, 2*order - 1};
 				break;
 			case "sym" :
-				support = new double[] {0 2*order - 1};
+				waveletSupport = {0, 2*order - 1};
 				break;
 			case "coif" :
-				support = new double[] {0 6*order - 1};
+				waveletSupport = {0 6*order - 1};
 				break;
 			case "dmey" :
-				support = new double[] {0 101};
+				waveletSupport = {0 101};
 				break;
 			default :
 				// Unsupported wavelet type
@@ -85,8 +109,8 @@ public class Wavelet {
 	 * @param None.
 	 * @return Two-element array with the endpoints of the wavelet support.
 	 */
-	public static int[] getSupport() {
-		assert(!supp.isEmpty());
+	public static double[] getSupport() {
+		return waveletSupport;
 	}// end method getSupport().
 	
 	/**
@@ -109,6 +133,43 @@ public class Wavelet {
 		assert(!psi.isEmpty());
 	} // end method getPsiAt().
 	
+	
+	/**
+	 * Checks if the given sample is in the domain of the density or not.
+	 * @param x : sample
+	 * @return True  : if sample is in the domain.
+	 *         False : if sample is not in the domain.
+	 */
+	public static boolean inSupport(double x){
+		
+	} // end inSupport method.
+	
+	
+	/**
+	 * Returns the look-up table for the function expanded in the given csv file.
+	 * @param filename : name of the file where function data is located.
+	 * @return an arraylist of doubles containing the function data.
+	 */
+	private static ArrayList<Double> loadFunctionData( String filename ) throws IOException{
+		
+		CSVReader reader = new CSVReader(new FileReader(filename));
+		List<String[]> myEntries = reader.readAll();
+		ArrayList<Double> fnData = new ArrayList<Double>();
+		
+		for(int i = 0; i < myEntries.size(); i++)
+		{
+			String[] content = myEntries.get(i);
+			
+			for(int j = 0; j< content.length; j++)
+			{
+				fnData.add( Double.parseDouble( content[j]) );
+			}
+		}
+		
+		reader.close();
+		
+		return fnData;
+	}// end loadFunctionData method.
 	
 	
 

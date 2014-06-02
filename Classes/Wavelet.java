@@ -80,11 +80,11 @@ public class Wavelet {
 		
 		int order = -1;
 		// Determine wavelet order if appropriate
-		if (ordBegin ~= -1) {
+		if (ordBegin != -1) {
 			int order = Integer.parseInt(wavType.substring(ordBegin));
 		}
 		
-		case (waveFamily) {
+		switch (waveFamily) {
 			case "db" :
 				waveletSupport = {0, 2*order - 1};
 				break;
@@ -92,10 +92,10 @@ public class Wavelet {
 				waveletSupport = {0, 2*order - 1};
 				break;
 			case "coif" :
-				waveletSupport = {0 6*order - 1};
+				waveletSupport = {0, 6*order - 1};
 				break;
 			case "dmey" :
-				waveletSupport = {0 101};
+				waveletSupport = {0, 101};
 				break;
 			default :
 				// Unsupported wavelet type

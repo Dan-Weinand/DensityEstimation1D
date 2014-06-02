@@ -23,7 +23,7 @@ public class Settings {
 	public static double discretization = .01; 
 	
 	// How many samples to wait in between plot updates
-	public static int updateFrequency;
+	public static int updateFrequency = 100;
 	
 	// Size of the window for data aging using the window method.
 	public static int windowSize       = 600;

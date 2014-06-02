@@ -43,6 +43,10 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	private boolean stopped;         // The user has selected the stop button
 	private static final int MAX_SAMPLES = 10000000; // Maximum samples which can be read
 	
+	// The window size
+	private static final int WINDOW_WIDTH = 500;
+	private static final int WINDOW_HEIGHT = 600;	
+	
 	/**
 	 * Create the applet frame
 	 */
@@ -70,7 +74,7 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	 * the buttons and the data plot
 	 */
 	public void initializeGUI() {
-		setSize(500,600);
+		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     	JPanel GUI = new JPanel();
     	GUI.setLayout(new BorderLayout());
     	

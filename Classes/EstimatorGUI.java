@@ -28,6 +28,8 @@ import javax.swing.border.EmptyBorder;
 
 import de.erichseifert.gral.data.DataTable;
 import de.erichseifert.gral.plots.XYPlot;
+import de.erichseifert.gral.plots.areas.AreaRenderer;
+import de.erichseifert.gral.plots.areas.DefaultAreaRenderer2D;
 import de.erichseifert.gral.plots.axes.Axis;
 import de.erichseifert.gral.plots.lines.DefaultLineRenderer2D;
 import de.erichseifert.gral.plots.lines.LineRenderer;
@@ -41,8 +43,10 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	private JButton stopButton;
 	private JButton resetButton;
 	private JButton settingsButton;
-	private InteractivePanel dataPanel;
 	
+	
+	private XYPlot dataPlot;						 // The plot of the density
+	private InteractivePanel dataPanel;				 // The panel storing the density plot
 	private DataTable densityTable;                  // The density information
 	private boolean stopped;                         // The user has selected the stop button
 	private boolean readStarted = false;             // Whether or not sampling has begun
@@ -52,8 +56,9 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	private static final int WINDOW_WIDTH = 500;
 	private static final int WINDOW_HEIGHT = 600;
 	
+	private double maxYHeight = 0.0;               // The maximum y height reached
+	
 	private BufferedReader dataReader;               // The reader for the user file
-	private double[] sampWindow;					 // The samples in the current window
 	
 	/**
 	 * Create the applet frame
@@ -65,7 +70,7 @@ public class EstimatorGUI extends JApplet implements ActionListener {
                 public void run() {
                 	
                 	// Initialize algorithm variables and GUI
-					try { Wavelet.init("db2"); } 
+					try { Wavelet.init("db6"); } 
 					catch (IOException e) {	e.printStackTrace();}
                 	DensityHelper.initializeTranslates();
                 	DensityHelper.initializeCoefficients();
@@ -117,12 +122,18 @@ public class EstimatorGUI extends JApplet implements ActionListener {
         DensityHelper.updateDensity(densityTable);
         
         // Create the plot for the data
-        XYPlot dataPlot = new XYPlot(densityTable);
+        dataPlot = new XYPlot(densityTable);
         dataPanel = new InteractivePanel(dataPlot);        
         LineRenderer lines = new DefaultLineRenderer2D();
+        AreaRenderer area = new DefaultAreaRenderer2D();
         dataPlot.setLineRenderer(densityTable, lines);
-        Color color = new Color(0.0f, 0.3f, 1.0f, 0);
-        dataPlot.getPointRenderer(densityTable).setColor(color);
+        dataPlot.setAreaRenderer(densityTable, area);
+        Color invis = new Color(0.0f, 0.3f, 1.0f, 0);
+        Color lineColor = new Color(0.0f, 0.3f, 1.0f);
+        Color areaColor = new Color(0.0f, 0.3f, 1.0f, 0.3f);
+        dataPlot.getPointRenderer(densityTable).setColor(invis);
+        dataPlot.getLineRenderer(densityTable).setColor(lineColor);
+        dataPlot.getAreaRenderer(densityTable).setColor(areaColor);
         GUI.add(dataPanel, BorderLayout.CENTER);
         
         // Add the frame to the display
@@ -188,13 +199,25 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 		while (dataReader.ready() && !stopped && sampInd < MAX_SAMPLES) {
 
 			double Xnew = Double.parseDouble(dataReader.readLine());
-			double NOT_YET_USED = -10000.0;
-			DensityHelper.updateCoefficients(Xnew, NOT_YET_USED);
+			DensityHelper.updateCoefficients(Xnew);
 			
 			// Update plot if the appropriate number of samples have been read
 			if (sampInd % Settings.updateFrequency == 0) {
 				
 				DensityHelper.updateDensity(densityTable);
+				
+				// Fix the maximum height of the axis
+				Axis yAx = dataPlot.getAxis("y");
+				double curYMax = (Double) yAx.getMax();
+				if (curYMax > maxYHeight) {
+					maxYHeight = curYMax;
+				}
+				else {
+					Axis nYAx = new Axis();
+					nYAx.setMax(maxYHeight);
+					nYAx.setMin(yAx.getMin());
+					dataPlot.setAxis("y",  nYAx);
+				}
 				
 				dataPanel.paintImmediately(0,0, this.getWidth(), this.getHeight());
 				

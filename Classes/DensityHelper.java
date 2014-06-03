@@ -19,7 +19,7 @@ public class DensityHelper {
 	 */
 	public static boolean inRange (double X) {
 		return (X > Settings.getMinimumRange() && X < Settings.getMaximumRange());
-	} // end inRange
+	} // end inRange.
 	
 	/**
 	 * Updates the function coefficients based on the incoming data point and
@@ -31,7 +31,7 @@ public class DensityHelper {
 	 * @param Xold : the leaving data point to update the coefficients based on
 	 */
 	public static void updateCoefficients(double Xnew, double Xold){
-		//NOT YET VETTED
+		//NOT YET VETTED.
 		
 		// The normalizing constant for the scaling basis functions
 		double scaleNormalizer = Math.pow(2, Settings.startLevel/2.0)/Settings.windowSize;

@@ -6,16 +6,16 @@
 public class Settings {
 	
 	// Start level for both the scaling and wavelet functions.
-	public static int startLevel       = 3;
+	public static int startLevel       = 1;
 	
 	// Stop level for both the scaling and wavelet functions.
-	public static int stopLevel        = 3;
+	public static int stopLevel        = 2;
 	
 	// Flag that determines which aging mechanism to use.
 	//      0: no aging.
 	//      1: Caudle aging method.
 	//      2: Window method.
-	public static int agingFlag        = 1;
+	public static int agingFlag        = 2;
 	public static final int caudleAge  = 1;
 	public static final int windowAge  = 2;
 	

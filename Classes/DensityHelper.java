@@ -144,6 +144,9 @@ public class DensityHelper {
 			else if (Settings.agingFlag == Settings.caudleAge) {
 				waveNormalizer *= (1 - Settings.agingTheta);
 			}
+			else if (Settings.agingFlag == Settings.noAge) {
+				waveNormalizer /= (N+1)*1.0;
+			}
 			
 			// Scale coefficients if Caudle aging is being used
 			if (Settings.agingFlag == Settings.caudleAge) {
@@ -155,6 +158,16 @@ public class DensityHelper {
 					Transform.waveletCoefficients.get(j - j0).set(wavIndex,  newCoef);
 				}
 					
+			}
+			
+			// Recursively compute coefficients if no aging is used
+			else if (Settings.agingFlag == Settings.noAge){
+				for (int wavIndex = 0; 
+						wavIndex < Transform.waveletCoefficients.get(j - j0).size();
+						wavIndex++) {
+					double newCoef = (N)/(N+1.0)*Transform.waveletCoefficients.get(j - j0).get(wavIndex);
+					Transform.waveletCoefficients.get(j - j0).set(wavIndex,  newCoef);
+				}
 			}
 			
 			// Subtract old samples effect if window aging is used

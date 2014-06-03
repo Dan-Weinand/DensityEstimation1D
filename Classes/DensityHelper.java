@@ -12,6 +12,9 @@ import de.erichseifert.gral.data.DataTable;
 
 public class DensityHelper {
 	
+	private static double[] oldSamples;		// The old samples in the window
+	private static int N;					// How many samples have been read in
+	
 	/**
 	 * Checks that the sample point X is within the domain of the density function.
 	 * @param X : the data point to check
@@ -28,13 +31,58 @@ public class DensityHelper {
 	 * Post: the coefficients are updated as needed
 	 * 
 	 * @param Xnew : the new data point to update the coefficients based on
-	 * @param Xold : the leaving data point to update the coefficients based on
 	 */
-	public static void updateCoefficients(double Xnew, double Xold){
-		//NOT YET VETTED.
+	public static void updateCoefficients(double Xnew){
 		
 		// The normalizing constant for the scaling basis functions
-		double scaleNormalizer = Math.pow(2, Settings.startLevel/2.0)/Settings.windowSize;
+		double scaleNormalizer = Math.pow(2, Settings.startLevel/2.0);
+		if (Settings.agingFlag == Settings.windowAge) {
+			scaleNormalizer /= Settings.windowSize;
+		}
+		else if (Settings.agingFlag == Settings.caudleAge) {
+			scaleNormalizer *= (1 - Settings.agingTheta);
+		}
+		
+		// Scale coefficients if Caudle aging is being used
+		if (Settings.agingFlag == Settings.caudleAge) {
+			for (int scalIndex = 0; 
+					scalIndex < Transform.scalingCoefficients.size();
+					scalIndex++) {
+				double newCoef = Settings.agingTheta*Transform.scalingCoefficients.get(scalIndex);
+				Transform.scalingCoefficients.set(scalIndex,  newCoef);
+			}
+				
+		}
+		
+		// Subtract old samples effect if window aging is used
+		else if (Settings.agingFlag == Settings.windowAge) {
+			
+			// Only remove a sample if there have been more than window size samples
+			if (N > Settings.windowSize){ 
+				double Xold = oldSamples[N % Settings.windowSize];
+			
+			
+				//Loop through the translations for the scaling basis functions
+				int scaleInd = 0;
+				for (double k : Transform.scalingTranslates) {
+				
+					// Get the translated & scaled data point
+					double xScaled = Math.pow(2, Settings.startLevel) * Xold - k;
+				
+					// If the wavelet supports the data point, update the coefficient
+					if (Wavelet.inSupport(xScaled)) {
+						double scaleNew = Transform.scalingCoefficients.get(scaleInd) 
+							          	- scaleNormalizer*Wavelet.getPhiAt(xScaled);
+						Transform.scalingCoefficients.set(scaleInd, scaleNew);
+					
+					}
+					scaleInd++;
+				}
+			}
+			
+			oldSamples[N % Settings.windowSize] = Xnew;
+			N++;
+		}
 		
 		//Loop through the translations for the scaling basis functions
 		int scaleInd = 0;
@@ -124,6 +172,12 @@ public class DensityHelper {
 	 */
 	public static void initializeCoefficients() {
 		
+		// Create window to store old samples
+		if (Settings.agingFlag == Settings.windowAge) {
+			oldSamples = new double[Settings.windowSize];
+			N = 0;
+		}
+		
 		// Set all scaling coefficients to 0
 		Transform.scalingCoefficients = new ArrayList<Double>(Collections.nCopies(Transform.scalingTranslates.size(), 0.0));
 		
@@ -150,7 +204,6 @@ public class DensityHelper {
 	 * @return the normalized density estimate
 	 */
 	public static ArrayList<Double> getDensity() {
-		//NOT YET VETTED
 		
 		ArrayList<Double> density = new ArrayList<Double> ();
 		
@@ -240,7 +293,6 @@ public class DensityHelper {
 	 * @return the density over the support
 	 */
 	public static void updateDensity(DataTable densityTable) {
-		//NOT YET VETTED
 		
 		ArrayList<Double> normDensity = getDensity();
 		

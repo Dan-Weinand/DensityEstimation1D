@@ -65,7 +65,7 @@ public class EstimatorGUI extends JApplet implements ActionListener {
                 public void run() {
                 	
                 	// Initialize algorithm variables and GUI
-					try { Wavelet.init("db2"); } 
+					try { Wavelet.init("db6"); } 
 					catch (IOException e) {	e.printStackTrace();}
                 	DensityHelper.initializeTranslates();
                 	DensityHelper.initializeCoefficients();
@@ -188,8 +188,7 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 		while (dataReader.ready() && !stopped && sampInd < MAX_SAMPLES) {
 
 			double Xnew = Double.parseDouble(dataReader.readLine());
-			double NOT_YET_USED = -10000.0;
-			DensityHelper.updateCoefficients(Xnew, NOT_YET_USED);
+			DensityHelper.updateCoefficients(Xnew);
 			
 			// Update plot if the appropriate number of samples have been read
 			if (sampInd % Settings.updateFrequency == 0) {

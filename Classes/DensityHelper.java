@@ -67,7 +67,7 @@ public class DensityHelper {
 		//NOT YET VETTED
 		
 		// Get the max & min values for the wavelet's support
-		int[] waveletMinMax = Wavelet.getSupport();
+		double[] waveletMinMax = Wavelet.getSupport();
 		
 		double kMin = Math.ceil(Math.pow(2,j*X) - waveletMinMax[0]);
 		double kMax = Math.floor(Math.pow(2,j*X) - waveletMinMax[1]);
@@ -95,6 +95,7 @@ public class DensityHelper {
 		for (double k = startTranslate; k <= stopTranslate; k++){
 			Transform.scalingTranslates.add(k);
 		}
+		
 		
 		// Initialize the wavelet translates if wavelets are being used
 		if (Settings.waveletFlag) {
@@ -154,7 +155,6 @@ public class DensityHelper {
 		ArrayList<Double> density = new ArrayList<Double> ();
 		
 		// Calculate un-normalized density for each point in domain
-		int scalIndex = 0;
 		for (double i = Settings.getMinimumRange(); 
 				i < Settings.getMaximumRange(); i += Settings.discretization) {
 			
@@ -162,6 +162,7 @@ public class DensityHelper {
 			double iDense = 0.0;
 			
 			// Cycle through translates for each point
+			int scalIndex = 0;
 			for (double k : Transform.scalingTranslates) {
 				double Xi = Math.pow(2, Settings.startLevel * i) - k;
 				
@@ -170,9 +171,9 @@ public class DensityHelper {
 					iDense += Transform.scalingCoefficients.get(scalIndex) 
 							  * Wavelet.getPhiAt(Xi);
 				}
+				scalIndex++;
 			}
 			density.add(iDense);
-			scalIndex++;
 		}
 		
 		//Normalize density
@@ -195,20 +196,22 @@ public class DensityHelper {
 		
 		ArrayList<Double> normDens = unNormDensity;
 		int iter = 0;
-		double threshold = Math.pow(10, -16);
+		double threshold = Math.pow(10, -4);
 		double densityDomainSize = Settings.getMaximumRange() - Settings.getMinimumRange();
 		
 		while (iter < 1000) {
 			
 			// Zero negative points
 			for (int i = 0; i < unNormDensity.size(); i++) {
-				normDens.set(i, Math.max(normDens.get(i),0.0));
+				if (normDens.get(i) < 0.0) {
+					normDens.set(i,0.0);
+				}
 			}
 			
 			// Sum over probability density over interval
 			double integralSum = 0.0;
 			for (int i = 0; i < unNormDensity.size(); i++) {
-				integralSum += normDens.get(i);
+				integralSum += normDens.get(i)*Settings.discretization;
 			}
 			
 			// Return if error is under threshold
@@ -220,6 +223,7 @@ public class DensityHelper {
 			double normalizeConstant = (integralSum - 1) / densityDomainSize;
 			for (int i = 0; i < unNormDensity.size(); i++) {
 				normDens.set(i, normDens.get(i) - normalizeConstant);
+
 			}
 			
 			iter++;
@@ -243,7 +247,7 @@ public class DensityHelper {
 		// Update each density in the range
         for (int i = 0; i < normDensity.size(); i++) {
             double Yi = normDensity.get(i);
-            densityTable.set(i, 1, Yi);
+            densityTable.set(1, i, Yi);
         }
 
 	}

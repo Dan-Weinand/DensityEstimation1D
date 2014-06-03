@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JApplet;
 import javax.swing.JButton;
@@ -42,6 +43,10 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	private boolean stopped;         // The user has selected the stop button
 	private static final int MAX_SAMPLES = 10000000; // Maximum samples which can be read
 	
+	// The window size
+	private static final int WINDOW_WIDTH = 500;
+	private static final int WINDOW_HEIGHT = 600;	
+	
 	/**
 	 * Create the applet frame
 	 */
@@ -52,13 +57,15 @@ public class EstimatorGUI extends JApplet implements ActionListener {
                 public void run() {
                 	
                 	// Initialize algorithm variables and GUI
+					try { Wavelet.init("db2"); } 
+					catch (IOException e) {	e.printStackTrace();}
                 	DensityHelper.initializeTranslates();
                 	DensityHelper.initializeCoefficients();
                 	initializeGUI();
                 }
             });
         } catch (Exception e) {
-            System.err.println("createGUI didn't complete successfully");
+            e.printStackTrace();
         }
     }
 	
@@ -67,7 +74,7 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	 * the buttons and the data plot
 	 */
 	public void initializeGUI() {
-		setSize(500,600);
+		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     	JPanel GUI = new JPanel();
     	GUI.setLayout(new BorderLayout());
     	
@@ -80,29 +87,37 @@ public class EstimatorGUI extends JApplet implements ActionListener {
     	startButton = new JButton ("Start");
     	startButton.addActionListener(this);
     	stopButton = new JButton ("Stop");
+    	stopButton.addActionListener(this);
     	resetButton = new JButton ("Reset");
+    	resetButton.addActionListener(this);
     	settingsButton = new JButton ("Settings");
+    	settingsButton.addActionListener(this);
     	optionsPanel.add(startButton);
     	optionsPanel.add(stopButton);
     	optionsPanel.add(resetButton);
     	optionsPanel.add(settingsButton);
     	GUI.add(optionsPanel, BorderLayout.NORTH);
     	
-    	// Add the plot to the frame
+    	// Create the dataTable to store density
     	densityTable = new DataTable(Double.class, Double.class);
-        for (double x = -0.5; x <= 4.5; x+=0.1) {
-            double y = Math.max((5.0*Math.sin(x)+Math.random()*.5)/6.0,0.0);
+        for (double x = Settings.getMinimumRange(); 
+        		x <= Settings.getMaximumRange() + Settings.discretization;
+        		x += Settings.discretization) {
+            double y = 0.0;
             densityTable.add(x, y);
         }
+        DensityHelper.updateDensity(densityTable);
+        
+        // Create the plot for the data
         XYPlot dataPlot = new XYPlot(densityTable);
-        Axis newAxis = dataPlot.getAxis("y");
-        newAxis.setMin(-.1);
-        dataPlot.setAxis("y", newAxis);
+        //Axis newAxis = dataPlot.getAxis("y");
+        //newAxis.setMin(-.1);
+        //dataPlot.setAxis("y", newAxis);
         InteractivePanel dataPanel = new InteractivePanel(dataPlot);        
         LineRenderer lines = new DefaultLineRenderer2D();
         dataPlot.setLineRenderer(densityTable, lines);
-        Color color = new Color(0.0f, 0.3f, 1.0f, 0);
-        dataPlot.getPointRenderer(densityTable).setColor(color);
+        //Color color = new Color(0.0f, 0.3f, 1.0f, 0);
+        //dataPlot.getPointRenderer(densityTable).setColor(color);
         GUI.add(dataPanel, BorderLayout.CENTER);
         
         // Add the frame to the display
@@ -136,7 +151,7 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 		while (densBuf.hasNext() && !stopped && sampInd < MAX_SAMPLES) {
 
 			double Xnew = densBuf.getNext();
-			double NOT_YET_USED;
+			double NOT_YET_USED = -10000.0;
 			DensityHelper.updateCoefficients(Xnew, NOT_YET_USED);
 			
 			// Update plot if the appropriate number of samples have been read
@@ -144,8 +159,6 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 				DensityHelper.updateDensity(densityTable);
 				this.repaint();
 				
-				// Pause briefly to display the plot
-				Thread.sleep(500);
 			}
 	        sampInd++;
 		}

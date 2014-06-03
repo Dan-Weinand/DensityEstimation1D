@@ -28,6 +28,8 @@ import javax.swing.border.EmptyBorder;
 
 import de.erichseifert.gral.data.DataTable;
 import de.erichseifert.gral.plots.XYPlot;
+import de.erichseifert.gral.plots.areas.AreaRenderer;
+import de.erichseifert.gral.plots.areas.DefaultAreaRenderer2D;
 import de.erichseifert.gral.plots.axes.Axis;
 import de.erichseifert.gral.plots.lines.DefaultLineRenderer2D;
 import de.erichseifert.gral.plots.lines.LineRenderer;
@@ -123,9 +125,15 @@ public class EstimatorGUI extends JApplet implements ActionListener {
         dataPlot = new XYPlot(densityTable);
         dataPanel = new InteractivePanel(dataPlot);        
         LineRenderer lines = new DefaultLineRenderer2D();
+        AreaRenderer area = new DefaultAreaRenderer2D();
         dataPlot.setLineRenderer(densityTable, lines);
-        Color color = new Color(0.0f, 0.3f, 1.0f, 0);
-        dataPlot.getPointRenderer(densityTable).setColor(color);
+        dataPlot.setAreaRenderer(densityTable, area);
+        Color invis = new Color(0.0f, 0.3f, 1.0f, 0);
+        Color lineColor = new Color(0.0f, 0.3f, 1.0f);
+        Color areaColor = new Color(0.0f, 0.3f, 1.0f, 0.3f);
+        dataPlot.getPointRenderer(densityTable).setColor(invis);
+        dataPlot.getLineRenderer(densityTable).setColor(lineColor);
+        dataPlot.getAreaRenderer(densityTable).setColor(areaColor);
         GUI.add(dataPanel, BorderLayout.CENTER);
         
         // Add the frame to the display

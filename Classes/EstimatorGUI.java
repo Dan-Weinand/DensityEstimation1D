@@ -19,6 +19,7 @@ import java.io.IOException;
 
 import javax.swing.JApplet;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -40,6 +41,7 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	private JButton stopButton;
 	private JButton resetButton;
 	private JButton settingsButton;
+	private InteractivePanel dataPanel;
 	
 	private DataTable densityTable;                  // The density information
 	private boolean stopped;                         // The user has selected the stop button
@@ -116,14 +118,11 @@ public class EstimatorGUI extends JApplet implements ActionListener {
         
         // Create the plot for the data
         XYPlot dataPlot = new XYPlot(densityTable);
-        //Axis newAxis = dataPlot.getAxis("y");
-        //newAxis.setMin(-.1);
-        //dataPlot.setAxis("y", newAxis);
-        InteractivePanel dataPanel = new InteractivePanel(dataPlot);        
+        dataPanel = new InteractivePanel(dataPlot);        
         LineRenderer lines = new DefaultLineRenderer2D();
         dataPlot.setLineRenderer(densityTable, lines);
-        //Color color = new Color(0.0f, 0.3f, 1.0f, 0);
-        //dataPlot.getPointRenderer(densityTable).setColor(color);
+        Color color = new Color(0.0f, 0.3f, 1.0f, 0);
+        dataPlot.getPointRenderer(densityTable).setColor(color);
         GUI.add(dataPanel, BorderLayout.CENTER);
         
         // Add the frame to the display
@@ -185,17 +184,19 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 		
 		// How many samples have been read in
 		int sampInd = 0;
+		
 		while (dataReader.ready() && !stopped && sampInd < MAX_SAMPLES) {
 
 			double Xnew = Double.parseDouble(dataReader.readLine());
 			double NOT_YET_USED = -10000.0;
 			DensityHelper.updateCoefficients(Xnew, NOT_YET_USED);
-			System.out.println(Transform.scalingCoefficients.get(5));
 			
 			// Update plot if the appropriate number of samples have been read
 			if (sampInd % Settings.updateFrequency == 0) {
+				
 				DensityHelper.updateDensity(densityTable);
-				this.repaint();
+				
+				dataPanel.paintImmediately(0,0, this.getWidth(), this.getHeight());
 				
 			}
 	        sampInd++;

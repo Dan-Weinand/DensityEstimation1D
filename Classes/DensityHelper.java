@@ -206,6 +206,7 @@ public class DensityHelper {
 	public static ArrayList<Double> getDensity() {
 		
 		ArrayList<Double> density = new ArrayList<Double> ();
+		double scaleNormalizer = Math.pow(2, Settings.startLevel/2.0);
 		
 		// Calculate un-normalized density for each point in domain
 		for (double i = Settings.getMinimumRange(); 
@@ -222,7 +223,7 @@ public class DensityHelper {
 				// Only update if the point is supported
 				if (Wavelet.inSupport(Xi)) {
 					iDense += Transform.scalingCoefficients.get(scalIndex) 
-							  * Wavelet.getPhiAt(Xi);
+							  * Wavelet.getPhiAt(Xi) * scaleNormalizer;
 				}
 				scalIndex++;
 			}
@@ -249,7 +250,7 @@ public class DensityHelper {
 		
 		ArrayList<Double> normDens = unNormDensity;
 		int iter = 0;
-		double threshold = Math.pow(10, -4);
+		double threshold = Math.pow(10, -8);
 		double densityDomainSize = Settings.getMaximumRange() - Settings.getMinimumRange();
 		
 		while (iter < 1000) {
@@ -275,8 +276,8 @@ public class DensityHelper {
 			// Modify density so that it integrates to 1
 			double normalizeConstant = (integralSum - 1) / densityDomainSize;
 			for (int i = 0; i < unNormDensity.size(); i++) {
+				
 				normDens.set(i, normDens.get(i) - normalizeConstant);
-
 			}
 			
 			iter++;

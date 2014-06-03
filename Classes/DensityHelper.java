@@ -41,12 +41,12 @@ public class DensityHelper {
 		for (double k : Transform.scalingTranslates) {
 			
 			// Get the translated & scaled data point
-			double xScaled = Math.pow(2, Settings.startLevel*Xnew) - k;
+			double xScaled = Math.pow(2, Settings.startLevel) * Xnew - k;
 			
 			// If the wavelet supports the data point, update the coefficient
 			if (Wavelet.inSupport(xScaled)) {
 				double scaleNew = Transform.scalingCoefficients.get(scaleInd) 
-						          + Wavelet.getPhiAt(xScaled);
+						          + scaleNormalizer*Wavelet.getPhiAt(xScaled);
 				Transform.scalingCoefficients.set(scaleInd, scaleNew);
 				
 			}
@@ -127,7 +127,7 @@ public class DensityHelper {
 		// Set all scaling coefficients to 0
 		Transform.scalingCoefficients = new ArrayList<Double>(Collections.nCopies(Transform.scalingTranslates.size(), 0.0));
 		
-		if (Settings.waveletFlag) {
+		/*if (Settings.waveletFlag) {
 			Transform.waveletCoefficients = new ArrayList<ArrayList<Double>> ();
 			
 			// Loop through resolutions
@@ -138,7 +138,7 @@ public class DensityHelper {
 													(Transform.waveletTranslates.get(j).size(), 0.0));
 				Transform.waveletCoefficients.add(jCoefficients);
 			}
-		}
+		}*/
 	} //end intializeCoefficients
 	
 	/**
@@ -164,7 +164,7 @@ public class DensityHelper {
 			// Cycle through translates for each point
 			int scalIndex = 0;
 			for (double k : Transform.scalingTranslates) {
-				double Xi = Math.pow(2, Settings.startLevel * i) - k;
+				double Xi = Math.pow(2, Settings.startLevel)*i - k;
 				
 				// Only update if the point is supported
 				if (Wavelet.inSupport(Xi)) {

@@ -59,7 +59,7 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	public void init() {
 
         try {
-            SwingUtilities.invokeAndWait(new Runnable() {
+            SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                 	
                 	// Initialize algorithm variables and GUI
@@ -116,14 +116,11 @@ public class EstimatorGUI extends JApplet implements ActionListener {
         
         // Create the plot for the data
         XYPlot dataPlot = new XYPlot(densityTable);
-        //Axis newAxis = dataPlot.getAxis("y");
-        //newAxis.setMin(-.1);
-        //dataPlot.setAxis("y", newAxis);
         InteractivePanel dataPanel = new InteractivePanel(dataPlot);        
         LineRenderer lines = new DefaultLineRenderer2D();
         dataPlot.setLineRenderer(densityTable, lines);
-        //Color color = new Color(0.0f, 0.3f, 1.0f, 0);
-        //dataPlot.getPointRenderer(densityTable).setColor(color);
+        Color color = new Color(0.0f, 0.3f, 1.0f, 0);
+        dataPlot.getPointRenderer(densityTable).setColor(color);
         GUI.add(dataPanel, BorderLayout.CENTER);
         
         // Add the frame to the display
@@ -190,7 +187,6 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 			double Xnew = Double.parseDouble(dataReader.readLine());
 			double NOT_YET_USED = -10000.0;
 			DensityHelper.updateCoefficients(Xnew, NOT_YET_USED);
-			System.out.println(Transform.scalingCoefficients.get(5));
 			
 			// Update plot if the appropriate number of samples have been read
 			if (sampInd % Settings.updateFrequency == 0) {

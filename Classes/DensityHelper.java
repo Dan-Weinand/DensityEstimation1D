@@ -46,6 +46,9 @@ public class DensityHelper {
 		else if (Settings.agingFlag == Settings.caudleAge) {
 			scaleNormalizer *= (1 - Settings.agingTheta);
 		}
+		else if (Settings.agingFlag == Settings.noAge) {
+			scaleNormalizer /= (N+1)*1.0;
+		}
 		
 		// Scale coefficients if Caudle aging is being used
 		if (Settings.agingFlag == Settings.caudleAge) {
@@ -56,6 +59,16 @@ public class DensityHelper {
 				Transform.scalingCoefficients.set(scalIndex,  newCoef);
 			}
 				
+		}
+		
+		// Recursively compute coefficients if no aging is used
+		else if (Settings.agingFlag == Settings.noAge){
+			for (int scalIndex = 0; 
+					scalIndex < Transform.scalingCoefficients.size();
+					scalIndex++) {
+				double newCoef = (N)/(N+1.0)*Transform.scalingCoefficients.get(scalIndex);
+				Transform.scalingCoefficients.set(scalIndex,  newCoef);
+			}
 		}
 		
 		// Subtract old samples effect if window aging is used
@@ -85,7 +98,6 @@ public class DensityHelper {
 			}
 			
 			oldSamples[N % Settings.windowSize] = Xnew;
-			N++;
 		}
 		
 		//Loop through the translations for the scaling basis functions
@@ -104,6 +116,8 @@ public class DensityHelper {
 			}
 			scaleInd++;
 		}
+		
+		N++;
 	} // end updateCoefficients
 	
 	/**
@@ -260,11 +274,11 @@ public class DensityHelper {
 	 * Post: the coefficients arrays are of the appropriate size.
 	 */
 	public static void initializeCoefficients() {
+		N = 0;
 		
 		// Create window to store old samples
 		if (Settings.agingFlag == Settings.windowAge) {
 			oldSamples = new double[Settings.windowSize];
-			N = 0;
 		}
 		
 		// Set all scaling coefficients to 0

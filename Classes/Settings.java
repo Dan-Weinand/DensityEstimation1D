@@ -6,7 +6,7 @@
 public class Settings {
 	
 	// Start level for both the scaling and wavelet functions.
-	public static int startLevel       = 1;
+	public static int startLevel       = 2;
 	
 	// Stop level for both the scaling and wavelet functions.
 	public static int stopLevel        = 2;
@@ -15,7 +15,8 @@ public class Settings {
 	//      0: no aging.
 	//      1: Caudle aging method.
 	//      2: Window method.
-	public static int agingFlag        = 2;
+	public static int agingFlag        = 0;
+	public static final int noAge      = 0;
 	public static final int caudleAge  = 1;
 	public static final int windowAge  = 2;
 	
@@ -43,7 +44,7 @@ public class Settings {
 	// Flag that determines whether or not the wavelet function should also be used.
 	//      false: wavelet is OFF -> density approximation done with scaling function only.
 	//      true : wavelet is ON  -> density approximation done with both scaling and wavelet functions.
-	public static boolean waveletFlag      = true;
+	public static boolean waveletFlag      = false;
 	
 	// Path to the folder containing the look-up table for the wavelets.
 	public static String waveletDataFolder = "";

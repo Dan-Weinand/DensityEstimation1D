@@ -19,7 +19,7 @@ public class DensityHelper {
 	 */
 	public static boolean inRange (double X) {
 		return (X > Settings.getMinimumRange() && X < Settings.getMaximumRange());
-	} // end inRange
+	} // end inRange.
 	
 	/**
 	 * Updates the function coefficients based on the incoming data point and

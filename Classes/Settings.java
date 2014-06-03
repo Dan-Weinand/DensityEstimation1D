@@ -47,5 +47,7 @@ public class Settings {
 	
 	// Path to the folder containing the look-up table for the wavelets.
 	public static String waveletDataFolder = "";
+	
+	public static String dataFile = "../WaveletFiles/skewUni2Claw.csv";
 
 }

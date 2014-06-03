@@ -12,6 +12,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 
 import javax.swing.JApplet;
@@ -38,14 +41,17 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	private JButton resetButton;
 	private JButton settingsButton;
 	
-	private DataTable densityTable;  // The density information
-	private DensityBuffer densBuf;   // The buffer for the user data
-	private boolean stopped;         // The user has selected the stop button
+	private DataTable densityTable;                  // The density information
+	private boolean stopped;                         // The user has selected the stop button
+	private boolean readStarted = false;             // Whether or not sampling has begun
 	private static final int MAX_SAMPLES = 10000000; // Maximum samples which can be read
 	
 	// The window size
 	private static final int WINDOW_WIDTH = 500;
-	private static final int WINDOW_HEIGHT = 600;	
+	private static final int WINDOW_HEIGHT = 600;
+	
+	private BufferedReader dataReader;               // The reader for the user file
+	private double[] sampWindow;					 // The samples in the current window
 	
 	/**
 	 * Create the applet frame
@@ -128,11 +134,40 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	 * User clicked a GUI button
 	 */
 	public void actionPerformed(ActionEvent e) {
+		
+		// User selects start button
 		if (e.getSource() == startButton) {
+			
+			// Do nothing if already running
+			if (stopped = false) {
+				return;
+			}
 			stopped = false;
-			onlineEstimation();
+			
+			// Create the reader
+			if (!readStarted) {
+				
+				try { 
+					dataReader = new BufferedReader( new FileReader(Settings.dataFile) );
+				} 
+				catch (FileNotFoundException e1) {
+					// NOTE: should eventually replace with kind warning text
+					// for users
+					e1.printStackTrace();
+				}
+				readStarted = true;
+			} // End reader creation
+			
+			// Begin the density estimation process
+			try {
+				onlineEstimation();
+			} catch (NumberFormatException | IOException e1) {
+				// NOTE: should eventually replace with kind warning text
+				// for users
+				e1.printStackTrace();
+			}
 	        
-		}
+		} // End start button
 		
 		if (e.getSource() == stopButton) {
 			stopped = true;
@@ -143,16 +178,19 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	/**
 	 * Runs the density estimation algorithm
 	 * and plots the estimates at intervals
+	 * @throws IOException When reading from an empty file
+	 * @throws NumberFormatException When file is incorrectly formatted
 	 */
-	public void onlineEstimation() {
+	public void onlineEstimation() throws NumberFormatException, IOException {
 		
 		// How many samples have been read in
 		int sampInd = 0;
-		while (densBuf.hasNext() && !stopped && sampInd < MAX_SAMPLES) {
+		while (dataReader.ready() && !stopped && sampInd < MAX_SAMPLES) {
 
-			double Xnew = densBuf.getNext();
+			double Xnew = Double.parseDouble(dataReader.readLine());
 			double NOT_YET_USED = -10000.0;
 			DensityHelper.updateCoefficients(Xnew, NOT_YET_USED);
+			System.out.println(Transform.scalingCoefficients.get(5));
 			
 			// Update plot if the appropriate number of samples have been read
 			if (sampInd % Settings.updateFrequency == 0) {

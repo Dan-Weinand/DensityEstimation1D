@@ -18,7 +18,7 @@ public class DensityHelper {
 	 * @return  : whether or not the point is in the domain
 	 */
 	public static boolean inRange (double X) {
-		return (X > Settings.getMinimumRange() && X < Settings.getMaximumRange());
+		return (X >= Settings.getMinimumRange() && X <= Settings.getMaximumRange());
 	} // end inRange.
 	
 	/**

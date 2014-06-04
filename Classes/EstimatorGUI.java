@@ -41,8 +41,6 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	
 	// The option buttons
 	private JButton startButton;
-	private JButton stopButton;
-	private JButton resetButton;
 	private JButton settingsButton;
 	private JPanel optionsPanel;
 	private JTextField sampleLabel;
@@ -53,7 +51,6 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	private XYPlot dataPlot;						 // The plot of the density
 	private InteractivePanel dataPanel;				 // The panel storing the density plot
 	private DataTable densityTable;                  // The density information
-	private boolean stopped;                         // The user has selected the stop button
 	
 	// The window size
 	private static final int WINDOW_WIDTH = 500;
@@ -105,16 +102,10 @@ public class EstimatorGUI extends JApplet implements ActionListener {
     	sampleLabel.setEditable(false);
     	startButton = new JButton ("Start");
     	startButton.addActionListener(this);
-    	stopButton = new JButton ("Stop");
-    	stopButton.addActionListener(this);
-    	resetButton = new JButton ("Reset");
-    	resetButton.addActionListener(this);
     	settingsButton = new JButton ("Settings");
     	settingsButton.addActionListener(this);
     	optionsPanel.add(sampleLabel);
     	optionsPanel.add(startButton);
-    	optionsPanel.add(stopButton);
-    	optionsPanel.add(resetButton);
     	optionsPanel.add(settingsButton);
     	GUI.add(optionsPanel, BorderLayout.NORTH);
     	
@@ -159,12 +150,6 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 		// User selects start button
 		if (e.getSource() == startButton) {
 			
-			// Do nothing if already running
-			if (stopped = false) {
-				return;
-			}
-			stopped = false;
-			
 			// Create the reader				
 			try { 
 				dataReader = new BufferedReader( new FileReader(Settings.dataFile) );
@@ -186,10 +171,6 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 			}
 	        
 		} // End start button
-		
-		if (e.getSource() == stopButton) {
-			stopped = true;
-		}
 		
 		if (e.getSource() == settingsButton) {
 			SettingsFrame.setVisible(true);
@@ -214,7 +195,7 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 		// How many samples have been read in
 		int sampInd = 0;
 		
-		while (dataReader.ready() && !stopped) {
+		while (dataReader.ready()) {
 
 			double Xnew = Double.parseDouble(dataReader.readLine());
 			DensityHelper.updateCoefficients(Xnew);
@@ -245,7 +226,6 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	        sampInd++;
 		}
 		
-		stopped = true;
 	}// End online density estimation
 	
 }

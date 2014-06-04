@@ -50,7 +50,7 @@ public class Settings {
 	// Flag that determines whether or not the wavelet function should also be used.
 	//      false: wavelet is OFF -> density approximation done with scaling function only.
 	//      true : wavelet is ON  -> density approximation done with both scaling and wavelet functions.
-	public static boolean waveletFlag      = true;
+	public static boolean waveletFlag      = false;
 	
 	// Path to the folder containing the look-up table for the wavelets.
 	public static String waveletDataFolder = "";

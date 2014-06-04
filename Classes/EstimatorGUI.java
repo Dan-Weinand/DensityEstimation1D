@@ -51,8 +51,6 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	private InteractivePanel dataPanel;				 // The panel storing the density plot
 	private DataTable densityTable;                  // The density information
 	private boolean stopped;                         // The user has selected the stop button
-	private boolean readStarted = false;             // Whether or not sampling has begun
-	private static final int MAX_SAMPLES = 10000000; // Maximum samples which can be read
 	
 	// The window size
 	private static final int WINDOW_WIDTH = 500;
@@ -160,19 +158,16 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 			}
 			stopped = false;
 			
-			// Create the reader
-			if (!readStarted) {
-				
-				try { 
-					dataReader = new BufferedReader( new FileReader(Settings.dataFile) );
-				} 
-				catch (FileNotFoundException e1) {
-					// NOTE: should eventually replace with kind warning text
-					// for users
-					e1.printStackTrace();
-				}
-				readStarted = true;
-			} // End reader creation
+			// Create the reader				
+			try { 
+				dataReader = new BufferedReader( new FileReader(Settings.dataFile) );
+			} 
+			catch (FileNotFoundException e1) {
+				// NOTE: should eventually replace with kind warning text
+				// for users
+				e1.printStackTrace();
+			}
+			
 			
 			// Begin the density estimation process
 			try {
@@ -212,7 +207,7 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 		// How many samples have been read in
 		int sampInd = 0;
 		
-		while (dataReader.ready() && !stopped && sampInd < MAX_SAMPLES) {
+		while (dataReader.ready() && !stopped) {
 
 			double Xnew = Double.parseDouble(dataReader.readLine());
 			DensityHelper.updateCoefficients(Xnew);
@@ -240,5 +235,8 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 			}
 	        sampInd++;
 		}
-	}
+		
+		stopped = true;
+	}// End online density estimation
+	
 }

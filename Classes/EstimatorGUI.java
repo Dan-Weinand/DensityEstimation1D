@@ -44,6 +44,8 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	private JButton resetButton;
 	private JButton settingsButton;
 	
+	// The settings panel
+	SettingsUI SettingsFrame;	
 	
 	private XYPlot dataPlot;						 // The plot of the density
 	private InteractivePanel dataPanel;				 // The panel storing the density plot
@@ -70,6 +72,10 @@ public class EstimatorGUI extends JApplet implements ActionListener {
                 public void run() {
                 	
                 	// Initialize algorithm variables and GUI
+                	try { Wavelet.init(Settings.waveletType); } 
+            		catch (IOException e) {	e.printStackTrace();}
+                	DensityHelper.initializeTranslates();
+                	DensityHelper.initializeCoefficients();
                 	initializeGUI();
                 }
             });
@@ -132,6 +138,10 @@ public class EstimatorGUI extends JApplet implements ActionListener {
         dataPlot.getAreaRenderer(densityTable).setColor(areaColor);
         GUI.add(dataPanel, BorderLayout.CENTER);
         
+        // Create the settings UI
+        SettingsFrame = new SettingsUI();
+        SettingsFrame.setVisible(false);
+        
         // Add the frame to the display
         add(GUI);
 	}
@@ -177,6 +187,10 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 		
 		if (e.getSource() == stopButton) {
 			stopped = true;
+		}
+		
+		if (e.getSource() == settingsButton) {
+			SettingsFrame.setVisible(true);
 		}
 		
 	}

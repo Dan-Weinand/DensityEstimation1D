@@ -23,6 +23,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
@@ -43,6 +44,8 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	private JButton stopButton;
 	private JButton resetButton;
 	private JButton settingsButton;
+	private JPanel optionsPanel;
+	private JTextField sampleLabel;
 	
 	// The settings panel
 	SettingsUI SettingsFrame;	
@@ -92,11 +95,14 @@ public class EstimatorGUI extends JApplet implements ActionListener {
     	GUI.setLayout(new BorderLayout());
     	
     	// Set up the options panel
-    	JPanel optionsPanel = new JPanel();
+    	optionsPanel = new JPanel();
     	optionsPanel.setAlignmentX(0);
     	optionsPanel.setAlignmentY(0);
     	
-    	// Create and add the windows to the panel
+    	// Create and add the buttons to the panel
+    	sampleLabel = new JTextField();
+    	sampleLabel.setText("Sample index ");
+    	sampleLabel.setEditable(false);
     	startButton = new JButton ("Start");
     	startButton.addActionListener(this);
     	stopButton = new JButton ("Stop");
@@ -105,6 +111,7 @@ public class EstimatorGUI extends JApplet implements ActionListener {
     	resetButton.addActionListener(this);
     	settingsButton = new JButton ("Settings");
     	settingsButton.addActionListener(this);
+    	optionsPanel.add(sampleLabel);
     	optionsPanel.add(startButton);
     	optionsPanel.add(stopButton);
     	optionsPanel.add(resetButton);
@@ -231,6 +238,8 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 				}
 				
 				dataPanel.paintImmediately(0,0, this.getWidth(), this.getHeight());
+				sampleLabel.setText("" + sampInd);
+				optionsPanel.paintImmediately(0,0, this.getWidth(), this.getHeight());
 				
 			}
 	        sampInd++;

@@ -224,4 +224,6 @@ public class SettingsUI extends JFrame{
 		setVisible(false);
 		dispose();
 	}
+	
+
 }

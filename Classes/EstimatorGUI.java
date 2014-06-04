@@ -70,10 +70,6 @@ public class EstimatorGUI extends JApplet implements ActionListener {
                 public void run() {
                 	
                 	// Initialize algorithm variables and GUI
-					try { Wavelet.init("db6"); } 
-					catch (IOException e) {	e.printStackTrace();}
-                	DensityHelper.initializeTranslates();
-                	DensityHelper.initializeCoefficients();
                 	initializeGUI();
                 }
             });
@@ -192,6 +188,12 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	 * @throws NumberFormatException When file is incorrectly formatted
 	 */
 	public void onlineEstimation() throws NumberFormatException, IOException {
+		
+		// Initialize the algorithm variables
+		try { Wavelet.init(Settings.waveletType); } 
+		catch (IOException e) {	e.printStackTrace();}
+    	DensityHelper.initializeTranslates();
+    	DensityHelper.initializeCoefficients();
 		
 		// How many samples have been read in
 		int sampInd = 0;

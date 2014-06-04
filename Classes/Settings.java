@@ -11,6 +11,12 @@ public class Settings {
 	// Stop level for both the scaling and wavelet functions.
 	public static int stopLevel        = 1;
 	
+	// Type of wavelet used.
+	public static String waveletType   = "db6";
+	
+	// Types of wavelets supported.
+	public static String[] waveletTypes =  {"coif1", "coif2", "coif3", "coif4", "coif5", "db2", "db3", "db4", "db5", "db6", "db7", "db8", "db9", "db10", "sym4", "sym5", "sym6", "sym7", "sym8", "sym9", "sym10", "dmey"};
+	
 	// Flag that determines which aging mechanism to use.
 	//      0: no aging.
 	//      1: Caudle aging method.

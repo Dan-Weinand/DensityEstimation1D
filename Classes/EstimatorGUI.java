@@ -108,30 +108,11 @@ public class EstimatorGUI extends JApplet implements ActionListener {
     	optionsPanel.add(startButton);
     	optionsPanel.add(settingsButton);
     	GUI.add(optionsPanel, BorderLayout.NORTH);
-    	
-    	// Create the dataTable to store density
-    	densityTable = new DataTable(Double.class, Double.class);
-        for (double x = Settings.getMinimumRange(); 
-        		x <= Settings.getMaximumRange() + Settings.discretization;
-        		x += Settings.discretization) {
-            double y = 0.0;
-            densityTable.add(x, y);
-        }
-        DensityHelper.updateDensity(densityTable);
         
         // Create the plot for the data
-        dataPlot = new XYPlot(densityTable);
-        dataPanel = new InteractivePanel(dataPlot);        
-        LineRenderer lines = new DefaultLineRenderer2D();
-        AreaRenderer area = new DefaultAreaRenderer2D();
-        dataPlot.setLineRenderer(densityTable, lines);
-        dataPlot.setAreaRenderer(densityTable, area);
-        Color invis = new Color(0.0f, 0.3f, 1.0f, 0);
-        Color lineColor = new Color(0.0f, 0.3f, 1.0f);
-        Color areaColor = new Color(0.0f, 0.3f, 1.0f, 0.3f);
-        dataPlot.getPointRenderer(densityTable).setColor(invis);
-        dataPlot.getLineRenderer(densityTable).setColor(lineColor);
-        dataPlot.getAreaRenderer(densityTable).setColor(areaColor);
+        dataPlot = new XYPlot();
+        initializePlot();
+        dataPanel = new InteractivePanel(dataPlot);
         GUI.add(dataPanel, BorderLayout.CENTER);
         
         // Create the settings UI
@@ -191,6 +172,7 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 		catch (IOException e) {	e.printStackTrace();}
     	DensityHelper.initializeTranslates();
     	DensityHelper.initializeCoefficients();
+    	initializePlot();
 		
 		// How many samples have been read in
 		int sampInd = 0;
@@ -227,5 +209,35 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 		}
 		
 	}// End online density estimation
+
+	// Properly initializes the plot of the PDF
+	private void initializePlot() {
+		
+		if (dataPlot.getData().size() > 0) {
+			dataPlot.remove(densityTable);
+		}
+		
+    	densityTable = new DataTable(Double.class, Double.class);
+        for (double x = Settings.getMinimumRange(); 
+        		x <= Settings.getMaximumRange() + Settings.discretization;
+        		x += Settings.discretization) {
+            double y = 0.0;
+            densityTable.add(x, y);
+        }
+        DensityHelper.updateDensity(densityTable);
+        dataPlot.add(densityTable);
+        
+        LineRenderer lines = new DefaultLineRenderer2D();
+        AreaRenderer area = new DefaultAreaRenderer2D();
+        dataPlot.setLineRenderer(densityTable, lines);
+        dataPlot.setAreaRenderer(densityTable, area);
+        Color invis = new Color(0.0f, 0.3f, 1.0f, 0);
+        Color lineColor = new Color(0.0f, 0.3f, 1.0f);
+        Color areaColor = new Color(0.0f, 0.3f, 1.0f, 0.3f);
+        dataPlot.getPointRenderer(densityTable).setColor(invis);
+        dataPlot.getLineRenderer(densityTable).setColor(lineColor);
+        dataPlot.getAreaRenderer(densityTable).setColor(areaColor);
+		
+	}
 	
 }

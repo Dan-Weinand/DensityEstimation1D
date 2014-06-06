@@ -60,8 +60,7 @@ public class SettingsUI extends JFrame{
 	
 	public void init()
 	{
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		//this.setLayout( new FlowLayout() );
 		this.setLayout(new FlowLayout());
 		this.setResizable(false);

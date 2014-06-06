@@ -35,6 +35,7 @@ import de.erichseifert.gral.plots.axes.Axis;
 import de.erichseifert.gral.plots.lines.DefaultLineRenderer2D;
 import de.erichseifert.gral.plots.lines.LineRenderer;
 import de.erichseifert.gral.ui.InteractivePanel;
+import de.erichseifert.gral.util.Insets2D;
 
 public class EstimatorGUI extends JApplet implements ActionListener {
 	
@@ -53,7 +54,7 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	private DataTable densityTable;                  // The density information
 	
 	// The window size
-	private static final int WINDOW_WIDTH = 500;
+	private static final int WINDOW_WIDTH = 600;
 	private static final int WINDOW_HEIGHT = 600;
 	
 	private double maxYHeight = 0.0;               // The maximum y height reached
@@ -64,7 +65,7 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	 * Create the applet frame
 	 */
 	public void init() {
-
+		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
                 public void run() {
@@ -87,7 +88,7 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	 * the buttons and the data plot
 	 */
 	public void initializeGUI() {
-		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+		
     	JPanel GUI = new JPanel();
     	GUI.setLayout(new BorderLayout());
     	
@@ -175,7 +176,7 @@ public class EstimatorGUI extends JApplet implements ActionListener {
     	initializePlot();
 		
 		// How many samples have been read in
-		int sampInd = 0;
+		int sampInd = 1;
 		
 		while (dataReader.ready()) {
 
@@ -231,6 +232,8 @@ public class EstimatorGUI extends JApplet implements ActionListener {
         AreaRenderer area = new DefaultAreaRenderer2D();
         dataPlot.setLineRenderer(densityTable, lines);
         dataPlot.setAreaRenderer(densityTable, area);
+        dataPlot.setInsets(new Insets2D.Double(5,50,40,40));
+        dataPlot.getAxisRenderer(XYPlot.AXIS_Y).setIntersection(-Double.MAX_VALUE);
         Color invis = new Color(0.0f, 0.3f, 1.0f, 0);
         Color lineColor = new Color(0.0f, 0.3f, 1.0f);
         Color areaColor = new Color(0.0f, 0.3f, 1.0f, 0.3f);

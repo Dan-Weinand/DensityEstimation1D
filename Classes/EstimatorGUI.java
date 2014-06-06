@@ -95,7 +95,6 @@ public class EstimatorGUI extends JApplet implements ActionListener {
     	
     	// Set up the options panel
     	optionsPanel = new JPanel();
-    	optionsPanel.setBackground(new Color(136,85,51));
     	optionsPanel.setAlignmentX(0);
     	optionsPanel.setAlignmentY(0);
     	
@@ -108,8 +107,6 @@ public class EstimatorGUI extends JApplet implements ActionListener {
     	sampleLabel.setText("Sample index ");
     	sampleLabel.setEditable(false);
     	sampleLabel.setPreferredSize(new Dimension(150, 25) );
-    	
-    	sampleLabel.setBackground(new Color(187, 153, 102));
     	sampleLabel.setHorizontalAlignment(JTextField.CENTER);
     	optionsPanel.add(sampleLabel);
     	optionsPanel.add(startButton);

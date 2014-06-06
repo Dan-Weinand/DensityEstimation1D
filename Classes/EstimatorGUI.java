@@ -10,6 +10,7 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -94,17 +95,22 @@ public class EstimatorGUI extends JApplet implements ActionListener {
     	
     	// Set up the options panel
     	optionsPanel = new JPanel();
+    	optionsPanel.setBackground(new Color(136,85,51));
     	optionsPanel.setAlignmentX(0);
     	optionsPanel.setAlignmentY(0);
     	
     	// Create and add the buttons to the panel
-    	sampleLabel = new JTextField();
-    	sampleLabel.setText("Sample index ");
-    	sampleLabel.setEditable(false);
     	startButton = new JButton ("Start");
     	startButton.addActionListener(this);
     	settingsButton = new JButton ("Settings");
     	settingsButton.addActionListener(this);
+    	sampleLabel = new JTextField();
+    	sampleLabel.setText("Sample index ");
+    	sampleLabel.setEditable(false);
+    	sampleLabel.setPreferredSize(new Dimension(150, 25) );
+    	
+    	sampleLabel.setBackground(new Color(187, 153, 102));
+    	sampleLabel.setHorizontalAlignment(JTextField.CENTER);
     	optionsPanel.add(sampleLabel);
     	optionsPanel.add(startButton);
     	optionsPanel.add(settingsButton);

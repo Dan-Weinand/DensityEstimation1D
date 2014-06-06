@@ -1,4 +1,4 @@
-1-D Streaming Density Estimation Applet
+1-D Streaming Density Estimation
 ===================
 
 ###Authors: Dan Weinand and Gedeon Nyengele
@@ -8,6 +8,11 @@ Based off of a Matlab implementation by Mark Moyou and Eddy Ihou. The algorithms
 
 ## Use
 This applet is intended to perform density estimation on a 1-dimensional data set using wavelets. Users may upload their own csv data files containing a single column of values (and no header) using the settings menu. The main advantage of this applet is that it displays a changing density distribution for non-stationary density distributions.
+
+The default data set (which is included in this repository) is a concatenation of a strongly skewed unimodal distribution for 3000 samples followed by 5000 samples from a 5-peaked "claw" distribution. This is included to demonstrate the ability of the algorithms to respond to changes in the distribution functions which are being approximated.
+
+### General functionality
+To upload your own data, select settings. Next, from the settings window in data settings select 'browse'. Then select your own csv file. You may then select from the various user parameters as desired. When you are done with the settings, click 'Save settings'. Then in the main screen, click 'start' to begin the density estimation process. The sample index will display how many samples have been read in when the plot was updated.
 
 ### Recommendations and settings
 

@@ -204,10 +204,10 @@ public class DensityRunner extends SwingWorker<Object, Integer>{
 	protected void done(){
 		try
 		{
-			startButton.setEnabled(true);    // Enable the start button in the applet.
-			settingsButton.setEnabled(true); // Enable the settings button in the applet.
-			stopButton.setEnabled(false);    // Disable the stop button in the applet.
-			if(stopButton.getText() == "Resume") stopButton.setText("Stop"); // Assign a proper label to the stop button.
+			startButton.setEnabled( true );    // Enable the start button in the applet.
+			settingsButton.setEnabled( true ); // Enable the settings button in the applet.
+			stopButton.setEnabled( false );    // Disable the stop button in the applet.
+			if( stopButton.getText() == "Resume" ) stopButton.setText( "Stop" ); // Assign a proper label to the stop button.
 		} // end try{}
 		catch(Exception ex){}
 	} // end method protected void done().

@@ -11,7 +11,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 import javax.swing.JApplet;
 import javax.swing.JButton;
@@ -56,7 +55,7 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	
 	
 	/**
-	 * Intializes the applet's GUI and Density Estimator variables.
+	 * Initializes the applet's GUI and Density Estimator variables.
 	 */
 	public void init() {
 		
@@ -70,7 +69,7 @@ public class EstimatorGUI extends JApplet implements ActionListener {
     	DensityHelper.initializeTranslates();
     	DensityHelper.initializeCoefficients();
     	
-    	// Intialize the applet's GUI.
+    	// Initialize the applet's GUI.
     	initializeGUI();
          
     }

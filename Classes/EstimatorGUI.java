@@ -9,10 +9,11 @@
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -20,13 +21,13 @@ import java.io.IOException;
 
 import javax.swing.JApplet;
 import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
 
 import de.erichseifert.gral.data.DataTable;
 import de.erichseifert.gral.plots.XYPlot;
@@ -39,11 +40,14 @@ import de.erichseifert.gral.ui.InteractivePanel;
 import de.erichseifert.gral.util.Insets2D;
 
 public class EstimatorGUI extends JApplet implements ActionListener {
-	
+
+	private static final long serialVersionUID = 1L;
 	
 	// The option buttons
 	private JButton startButton;
+	private JButton stopButton;
 	private JButton settingsButton;
+	private JButton resetButton;
 	private JPanel optionsPanel;
 	private JTextField sampleLabel;
 	
@@ -62,11 +66,17 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	
 	private BufferedReader dataReader;               // The reader for the user file
 	
+	private TestRunner runner;
+	
+	
+	
 	/**
 	 * Create the applet frame
 	 */
 	public void init() {
 		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+		
+		
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
                 public void run() {
@@ -99,10 +109,21 @@ public class EstimatorGUI extends JApplet implements ActionListener {
     	optionsPanel.setAlignmentY(0);
     	
     	// Create and add the buttons to the panel
+    	Dimension btnSize = new Dimension(85, 25);
     	startButton = new JButton ("Start");
     	startButton.addActionListener(this);
+    	startButton.setPreferredSize(btnSize);
+    	stopButton = new JButton("Stop");
+    	stopButton.setEnabled(false);
+    	stopButton.setPreferredSize(btnSize);
+    	stopButton.addActionListener(this);    	
     	settingsButton = new JButton ("Settings");
+    	settingsButton.setPreferredSize(btnSize);
     	settingsButton.addActionListener(this);
+    	resetButton = new JButton("Reset");
+    	resetButton.addActionListener(this);
+    	resetButton.setPreferredSize(btnSize);
+    	
     	sampleLabel = new JTextField();
     	sampleLabel.setText("Sample index ");
     	sampleLabel.setEditable(false);
@@ -110,6 +131,8 @@ public class EstimatorGUI extends JApplet implements ActionListener {
     	sampleLabel.setHorizontalAlignment(JTextField.CENTER);
     	optionsPanel.add(sampleLabel);
     	optionsPanel.add(startButton);
+    	optionsPanel.add(stopButton);
+    	optionsPanel.add(resetButton);
     	optionsPanel.add(settingsButton);
     	GUI.add(optionsPanel, BorderLayout.NORTH);
         
@@ -135,30 +158,35 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 		// User selects start button
 		if (e.getSource() == startButton) {
 			
-			// Create the reader				
-			try { 
-				dataReader = new BufferedReader( new FileReader(Settings.dataFile) );
-			} 
-			catch (FileNotFoundException e1) {
-				// NOTE: should eventually replace with kind warning text
-				// for users
-				e1.printStackTrace();
-			}
-			
-			
-			// Begin the density estimation process
-			try {
-				onlineEstimation();
-			} catch (NumberFormatException | IOException e1) {
-				// NOTE: should eventually replace with kind warning text
-				// for users
-				e1.printStackTrace();
-			}
+			startButton.setEnabled(false);
+			settingsButton.setEnabled(false);
+			stopButton.setEnabled(true);
+			startDensityEstimation();
 	        
 		} // End start button
 		
-		if (e.getSource() == settingsButton) {
+		else if( e.getSource() == stopButton ){
+			if( e.getActionCommand() == "Stop" )
+			{
+				stopButton.setText("Resume");
+				runner.pause();
+			}
+			
+			else
+			{
+				stopButton.setText("Stop");
+				runner.resume();
+			}
+		}
+		
+		
+		else if (e.getSource() == settingsButton) {
 			SettingsFrame.setVisible(true);
+		}
+		
+		else if(e.getSource() == resetButton)
+		{
+			runner.terminate();
 		}
 		
 	}
@@ -206,7 +234,6 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 				
 				dataPanel.paintImmediately(0,0, this.getWidth(), this.getHeight());
 				sampleLabel.setText("" + sampInd);
-				optionsPanel.paintImmediately(0,0, this.getWidth(), this.getHeight());
 				
 			}
 	        sampInd++;
@@ -221,7 +248,7 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 			dataPlot.remove(densityTable);
 		}
 		
-    	densityTable = new DataTable(Double.class, Double.class);
+    	densityTable = new DataTable(2, Double.class);
         for (double x = Settings.getMinimumRange(); 
         		x <= Settings.getMaximumRange() + Settings.discretization;
         		x += Settings.discretization) {
@@ -246,4 +273,34 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 		
 	}
 	
+//	private void startDensityEstimation()
+//	{
+//		// Create the reader				
+//		try { 
+//			dataReader = new BufferedReader( new FileReader(Settings.dataFile) );
+//		} 
+//		catch (FileNotFoundException e1) {
+//			// NOTE: should eventually replace with kind warning text
+//			// for users
+//			e1.printStackTrace();
+//		}
+//		
+//		
+//		// Begin the density estimation process
+//		try {
+//			onlineEstimation();
+//		} catch (NumberFormatException | IOException e1) {
+//			// NOTE: should eventually replace with kind warning text
+//			// for users
+//			e1.printStackTrace();
+//		}			
+//	}
+	
+	private void startDensityEstimation(){
+		
+		runner = new TestRunner(sampleLabel, this.getWidth(), this.getHeight(), startButton, stopButton, settingsButton, dataPlot, dataPanel);
+		runner.execute();
+		
+		
+	}
 }

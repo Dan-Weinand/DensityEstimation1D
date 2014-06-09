@@ -458,15 +458,20 @@ public class DensityHelper {
 	 * @param density : the data table containing the density information
 	 * @return the density over the support
 	 */
-	public static void updateDensity(DataTable densityTable) {
+	public static double updateDensity(DataTable densityTable) {
 		
+		double max = 0;
 		ArrayList<Double> normDensity = getDensity();
 		
 		// Update each density in the range
         for (int i = 0; i < normDensity.size(); i++) {
             double Yi = normDensity.get(i);
             densityTable.set(1, i, Yi);
+            
+            if(Yi > max) max = Yi;
         }
+        
+        return max;
 
 	}
 	

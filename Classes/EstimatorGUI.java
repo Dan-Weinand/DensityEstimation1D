@@ -12,20 +12,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 
 import javax.swing.JApplet;
 import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
@@ -62,11 +54,13 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	private static final int WINDOW_WIDTH = 600;
 	private static final int WINDOW_HEIGHT = 600;
 	
-	private double maxYHeight = 0.0;               // The maximum y height reached
+	// The maximum y height reached in the plot.
+	private double maxYHeight = 0.0;               
 	
-	private BufferedReader dataReader;               // The reader for the user file
+	// The buffer reader for the user file.
+	private BufferedReader dataReader;               
 	
-	private TestRunner runner;
+	private DensityRunner runner;
 	
 	
 	
@@ -298,7 +292,7 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	
 	private void startDensityEstimation(){
 		
-		runner = new TestRunner(sampleLabel, this.getWidth(), this.getHeight(), startButton, stopButton, settingsButton, dataPlot, dataPanel);
+		runner = new DensityRunner(sampleLabel, this.getWidth(), this.getHeight(), startButton, stopButton, settingsButton, dataPlot, dataPanel);
 		runner.execute();
 		
 		

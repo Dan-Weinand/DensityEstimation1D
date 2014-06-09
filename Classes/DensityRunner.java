@@ -1,3 +1,8 @@
+/**
+ * Thread that performs all the calculations and updates the plot.
+ * @author Gedeon Nyengele & Daniel Weinand.
+ */
+
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
@@ -59,17 +64,17 @@ public class DensityRunner extends SwingWorker<Object, Integer>{
 			
 			while( !isCancelled() && dataReader.ready() )
 			{
-				// Sleep if GUI paused the DensityRunner.
+				// Sleep if the user paused the DensityRunner.
 				if( paused )
 				{
 					try{ synchronized(this) { this.wait(1000);} }
 					catch( InterruptedException ex ) {}
 				} // end if( paused ).
 				
-				// Do the background work.
+				// Perform calculations and update plot.
 				else
 				{
-					try { Thread.sleep(1000); }
+					try { Thread.sleep(100); }
 					catch( InterruptedException ex){}
 					
 					xNew = Double.parseDouble( dataReader.readLine() );

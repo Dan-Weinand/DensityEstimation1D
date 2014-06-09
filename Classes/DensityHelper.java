@@ -454,13 +454,11 @@ public class DensityHelper {
 	
 	/**
 	 * Takes the old normalized density over the supported range and
-	 * updates it while returning the maximum density.
+	 * updates it based on the current coefficients.
 	 * @param density : the data table containing the density information
-	 * @return the maximum density in the support
 	 */
-	public static double updateDensity(DataTable densityTable) {
+	public static void updateDensity(DataTable densityTable) {
 		
-		double max = 0;
 		ArrayList<Double> normDensity = getDensity();
 		
 		// Update each density in the range
@@ -468,10 +466,7 @@ public class DensityHelper {
             double Yi = normDensity.get(i);
             densityTable.set(1, i, Yi);
             
-            if(Yi > max) max = Yi;
         }
-        
-        return max;
 
 	}
 	

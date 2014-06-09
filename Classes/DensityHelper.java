@@ -130,7 +130,7 @@ public class DensityHelper {
 	 */
 	private static void updateWaveletCoefficients(double Xnew) {
 		
-		// Short hand for start leve
+		// Short hand for start level
 		int j0 = Settings.startLevel;
 		
 		// Loop through for each resolution level
@@ -227,8 +227,8 @@ public class DensityHelper {
 	 * @return : An array containing the minimum and maximum
 	 *           translation indices which support the data point
 	 */
-	public static double[] findRelevantKIndices(double X, int j) {
-		//NOT YET VETTED
+	private static double[] findRelevantKIndices(double X, int j) {
+		//NOT YET VETTED, potentially could be used in future optimization
 		
 		// Get the max & min values for the wavelet's support
 		double[] waveletMinMax = Wavelet.getSupport();
@@ -310,7 +310,7 @@ public class DensityHelper {
 				Transform.waveletCoefficients.add(jCoefficients);
 			}
 		}
-	} //end intializeCoefficients
+	} //end initializeCoefficients
 	
 	/**
 	 * Calculates the density at each discrete point in the
@@ -320,7 +320,7 @@ public class DensityHelper {
 	 *      are the proper size
 	 * @return the normalized density estimate
 	 */
-	public static ArrayList<Double> getDensity() {
+	private static ArrayList<Double> getDensity() {
 		
 		ArrayList<Double> density = new ArrayList<Double> ();
 		double scaleNormalizer = Math.pow(2, Settings.startLevel/2.0);
@@ -453,10 +453,10 @@ public class DensityHelper {
 	} //end normalizeDensity
 	
 	/**
-	 * Takes the normalized density over the supported range and
-	 * returns the same, formatted for GRAL compatibility
+	 * Takes the old normalized density over the supported range and
+	 * updates it while returning the maximum density.
 	 * @param density : the data table containing the density information
-	 * @return the density over the support
+	 * @return the maximum density in the support
 	 */
 	public static double updateDensity(DataTable densityTable) {
 		

@@ -104,7 +104,6 @@ public class EstimatorGUI extends JApplet implements ActionListener {
     	resetButton = new JButton( "Reset" );
     	resetButton.addActionListener( this );
     	resetButton.setPreferredSize( btnSize );
-    	
     	sampleLabel = new JTextField();
     	sampleLabel.setText( "Sample index " );
     	sampleLabel.setEditable( false );

@@ -66,7 +66,7 @@ public class EstimatorGUI extends JApplet implements ActionListener {
                 	
     	// Initialize algorithm variables.
     	try { Wavelet.init( Settings.waveletType ); } 
-		catch ( IOException e ) {	e.printStackTrace(); }
+		catch ( Exception e ) { }
     	DensityHelper.initializeTranslates();
     	DensityHelper.initializeCoefficients();
     	

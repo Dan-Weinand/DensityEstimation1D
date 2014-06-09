@@ -84,7 +84,7 @@ public class DensityRunner extends SwingWorker<Object, Integer>{
 		
 		// Initialize the algorithm variables
 		try { Wavelet.init( Settings.waveletType ); } 
-		catch ( IOException e ) {	e.printStackTrace();}
+		catch ( IOException e ) {}
     	DensityHelper.initializeTranslates();
     	DensityHelper.initializeCoefficients();
     	

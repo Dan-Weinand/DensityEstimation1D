@@ -1,3 +1,5 @@
+package edu.fit.estimator1D;
+
 /**
  * Class to both display the current density estimate,
  * and allow the user to select various parameters.
@@ -64,8 +66,7 @@ public class EstimatorGUI extends JApplet implements ActionListener {
 	
                 	
     	// Initialize algorithm variables.
-    	try { Wavelet.init( Settings.waveletType ); } 
-		catch ( Exception e ) { }
+    	Wavelet.init( Settings.waveletType ); 
     	DensityHelper.initializeTranslates();
     	DensityHelper.initializeCoefficients();
     	

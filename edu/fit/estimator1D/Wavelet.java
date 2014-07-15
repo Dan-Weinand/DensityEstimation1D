@@ -1,7 +1,8 @@
+package edu.fit.estimator1D;
+
 import java.util.ArrayList;
 import java.io.*;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 import au.com.bytecode.opencsv.CSVReader;
 /**
@@ -11,9 +12,6 @@ import au.com.bytecode.opencsv.CSVReader;
  * 
  */
 public class Wavelet {
-	
-	// Type of the wavelet.
-	private static String waveletType;
 	
 	// The domain for the wavelet used.
 	// This called "supp" in the MATLAB implementation.
@@ -34,22 +32,19 @@ public class Wavelet {
 	 * @param wavType : string for the wavelet type
 	 * @throws IOException 
 	 */
-	public static void init(String wavType) throws IOException{
-		
-		// Set the wavelet type.
-		Wavelet.waveletType = wavType;
+	public static void init(String wavType){
 		
 		// Find the support for the given wavelet.
 		initializeSupport(wavType);
 		
 		// Load phi function data.
-		Wavelet.phi    = loadFunctionData( "../WaveletFiles/" + wavType + "PHI.csv" );
+		Wavelet.phi    = loadFunctionData( Settings.waveletDataFolder + wavType + "PHI.csv" );
 		
 		// Load psi function data
-		Wavelet.psi    = loadFunctionData( "../WaveletFiles/" + wavType + "PSI.csv" );
+		Wavelet.psi    = loadFunctionData( Settings.waveletDataFolder + wavType + "PSI.csv" );
 		
 		// Load domain
-		Wavelet.domain = loadFunctionData( "../WaveletFiles/" + wavType + "SUPP.csv" );
+		Wavelet.domain = loadFunctionData( Settings.waveletDataFolder + wavType + "SUPP.csv" );
 		
 	} // end init method.
 	
@@ -153,25 +148,38 @@ public class Wavelet {
 	 * @param filename : name of the file where function data is located.
 	 * @return an arraylist of doubles containing the function data.
 	 */
-	private static ArrayList<Double> loadFunctionData( String filename ) throws IOException{
+	private static ArrayList<Double> loadFunctionData( String filename ) {
 		
-		CSVReader reader = new CSVReader(new FileReader(filename));
-		List<String[]> myEntries = reader.readAll();
 		ArrayList<Double> fnData = new ArrayList<Double>();
 		
-		for(int i = 0; i < myEntries.size(); i++)
+		try
 		{
-			String[] content = myEntries.get(i);
+			java.io.InputStream in = Wavelet.class.getResourceAsStream(filename);
+			CSVReader reader = new CSVReader(new InputStreamReader(in));
 			
-			for(int j = 0; j< content.length; j++)
+			List<String[]> myEntries = reader.readAll();
+			
+			
+			for(int i = 0; i < myEntries.size(); i++)
 			{
-				fnData.add( Double.parseDouble( content[j]) );
+				String[] content = myEntries.get(i);
+				
+				for(int j = 0; j< content.length; j++)
+				{
+					fnData.add( Double.parseDouble( content[j]) );
+				}
 			}
+			
+			reader.close();
+			
+			
 		}
 		
-		reader.close();
+		catch(Exception ex){}
 		
 		return fnData;
+		
+		
 	}// end loadFunctionData method.
 	
 	/**

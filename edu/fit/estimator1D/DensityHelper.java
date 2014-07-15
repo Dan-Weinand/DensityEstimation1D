@@ -1,3 +1,5 @@
+package edu.fit.estimator1D;
+
 /**
  * Helper functions for the density estimation algorithm.
  * 
@@ -471,4 +473,5 @@ public class DensityHelper {
 	}
 	
 }
+
 

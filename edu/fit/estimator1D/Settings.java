@@ -1,3 +1,5 @@
+package edu.fit.estimator1D;
+
 /**
  * Encapsulates all the parameter variables used in the density estimator.
  * 
@@ -53,8 +55,9 @@ public class Settings {
 	public static boolean waveletFlag      = false;
 	
 	// Path to the folder containing the look-up table for the wavelets.
-	public static String waveletDataFolder = "";
+	public static String waveletDataFolder = "/edu/fit/estimator1D/resources/waveletfiles/";
 	
-	public static String dataFile = "../WaveletFiles/skewUni2Claw.csv";
+	public static String dataFile = "";
 
 }
+

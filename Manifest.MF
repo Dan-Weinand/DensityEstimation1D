@@ -1,0 +1,5 @@
+Permissions: all-permissions
+Codebase: *.digitsquare.com *.fit.edu
+Application-Name: Density Estimator 1D
+Application-Library-Allowable-Codebase: *.digitsquare.com *.fit.edu
+Trusted-Only: true

@@ -1,3 +1,5 @@
+package edu.fit.estimator1D;
+
 /**
  * Thread to perform all calculations and update plots.
  * @author Gedeon Nyengele & Daniel Weinand.
@@ -6,7 +8,7 @@
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -83,8 +85,7 @@ public class DensityRunner extends SwingWorker<Object, Integer>{
 	protected Object doInBackground(){
 		
 		// Initialize the algorithm variables
-		try { Wavelet.init( Settings.waveletType ); } 
-		catch ( IOException e ) {}
+		Wavelet.init( Settings.waveletType ); 
     	DensityHelper.initializeTranslates();
     	DensityHelper.initializeCoefficients();
     	
@@ -96,8 +97,21 @@ public class DensityRunner extends SwingWorker<Object, Integer>{
 		
 		try
 		{
-			// Read the user file.
-			dataReader = new BufferedReader( new FileReader( Settings.dataFile ) ); 
+			// Get samples from default file if datafile not specified by user.
+			if(Settings.dataFile.equals(""))
+			{
+				String filename = "/edu/fit/estimator1D/resources/datafiles/skewUni2Claw.csv";
+				java.io.InputStream in = getClass().getResourceAsStream(filename);
+				dataReader = new BufferedReader( new InputStreamReader(in) );
+			}
+			
+			// Get samples from user's file if specified.
+			else
+			{
+				// Read the user file.
+				dataReader = new BufferedReader( new FileReader( Settings.dataFile ) ); 
+			}
+			
 			
 			// Perform next calculations only if there is a data sample left and
 			// the density runner is not killed.
